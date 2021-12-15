@@ -22,12 +22,18 @@
         <property name="text">
          <string>OPEN</string>
         </property>
+        <property name="shortcut">
+         <string>Ctrl+O</string>
+        </property>
        </widget>
       </item>
       <item row="3" column="0">
        <widget class="QPushButton" name="but_cnc">
         <property name="text">
          <string>GEN_CNC</string>
+        </property>
+        <property name="shortcut">
+         <string>Ctrl+Shift+C</string>
         </property>
        </widget>
       </item>
@@ -36,12 +42,18 @@
         <property name="text">
          <string>FILTER</string>
         </property>
+        <property name="shortcut">
+         <string>Ctrl+Shift+F</string>
+        </property>
        </widget>
       </item>
       <item row="5" column="0" colspan="2">
        <widget class="QPushButton" name="but_gCode">
         <property name="text">
          <string>MAKE G-Code</string>
+        </property>
+        <property name="shortcut">
+         <string>Ctrl+Return</string>
         </property>
        </widget>
       </item>
@@ -57,12 +69,18 @@
         <property name="text">
          <string>TRIM</string>
         </property>
+        <property name="shortcut">
+         <string>Ctrl+T</string>
+        </property>
        </widget>
       </item>
       <item row="4" column="0" colspan="2">
        <widget class="QPushButton" name="but_plot">
         <property name="text">
          <string>PLOT</string>
+        </property>
+        <property name="shortcut">
+         <string>Ctrl+P</string>
         </property>
        </widget>
       </item>

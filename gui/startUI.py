@@ -12,13 +12,15 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.setupUi(self)
         self.df = None
         self.setup_trigger()
+        self.check_data()
 
     def setup_trigger(self):
         self.but_trim.clicked.connect(self.open_trimming)
         self.but_openFile.clicked.connect(self.open_file)
 
     def open_trimming(self):
-        tdia = Td()
+        data = self.df
+        tdia = Td(data)
         tdia.exec_()
 
     def open_file(self):
@@ -48,10 +50,31 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.check_data()
 
     def check_data(self):
+        buttons = [self.but_cnc, self.but_gCode, self.but_filter, self.but_trim, self.but_plot,
+                   self.but_statusTrim, self.but_statusCNC, self.but_statuFilter]
         if self.df is not None:
+            if not hasattr(self.df, 'Sollwert'):
+                box.show_error_box('Keine Sollwertdaten vorhanden.\nDatei prüfen!')
+                return
+
             self.but_status_import.setText('Geladen')
+
+            for but in buttons:
+                but.show()
+                # but.setEnabled(True)
+            self.resize(self.minimumSizeHint())
+
+            if hasattr(self.df, 'Gefiltert'):
+                self.but_statusTrim.setText('Gefiltert')
+            else:
+                self.but_statusTrim.setText('Ungefiltert')
         else:
             self.but_status_import.setText('leer')
+            for but in buttons:
+                but.hide()
+                # but.setEnabled(False)
+            self.resize(self.minimumSizeHint())
+
 
 
 
