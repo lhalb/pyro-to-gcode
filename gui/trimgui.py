@@ -30,6 +30,10 @@ class Ui_Dialog(object):
         self.but_trim_left = QtWidgets.QPushButton(Dialog)
         self.but_trim_left.setObjectName("but_trim_left")
         self.horizontalLayout.addWidget(self.but_trim_left)
+        self.lab_left = QtWidgets.QLabel(Dialog)
+        self.lab_left.setMaximumSize(QtCore.QSize(40, 16777215))
+        self.lab_left.setObjectName("lab_left")
+        self.horizontalLayout.addWidget(self.lab_left)
         self.slider_left = QtWidgets.QSlider(Dialog)
         self.slider_left.setOrientation(QtCore.Qt.Horizontal)
         self.slider_left.setObjectName("slider_left")
@@ -38,6 +42,10 @@ class Ui_Dialog(object):
         self.slider_right.setOrientation(QtCore.Qt.Horizontal)
         self.slider_right.setObjectName("slider_right")
         self.horizontalLayout.addWidget(self.slider_right)
+        self.lab_right = QtWidgets.QLabel(Dialog)
+        self.lab_right.setMaximumSize(QtCore.QSize(40, 16777215))
+        self.lab_right.setObjectName("lab_right")
+        self.horizontalLayout.addWidget(self.lab_right)
         self.but_trim_right = QtWidgets.QPushButton(Dialog)
         self.but_trim_right.setObjectName("but_trim_right")
         self.horizontalLayout.addWidget(self.but_trim_right)
@@ -57,6 +65,8 @@ class Ui_Dialog(object):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
         self.but_trim_left.setText(_translate("Dialog", "TRIM LEFT"))
+        self.lab_left.setText(_translate("Dialog", "000000"))
+        self.lab_right.setText(_translate("Dialog", "000000"))
         self.but_trim_right.setText(_translate("Dialog", "TRIM RIGHT"))
 from gui.mplwidget import MplWidget
 
