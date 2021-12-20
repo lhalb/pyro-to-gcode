@@ -1,0 +1,104 @@
+; PYR_PAR0.SPF
+; Unterprogramm - Senrortherm Phyrometer - Parameterdatei
+; Anlage TU-Freiberg
+; Software-Stand: 1.00
+; Datum : 06.2014
+; Ersteller : M.Hofner
+;
+; ************* PYR_PAR0 ****************
+; Beschreibung:
+;
+; Parameter HLxx
+
+
+PROC PYR_PAR
+
+
+DEF REAL _T_MIN         = 550   ; Messbereich Pyrometer Limit unten [°C]
+DEF REAL _T_MAX         = 1400   ; Messbereich Pyrometer Limit oben  [°C]
+DEF REAL _T_OFF         = 25   ;6.5 Offset Temperatur-Sollwert  [°C]
+DEF REAL _dSQ_MAX       = 55  ;21   ; zulässige Regler-Stellgröße als additiver Ib-Anteil [mA]
+DEF REAL _dF_MAX        = 0    ; zulässige Regler-Stellgröße als additiver F-Anteil [mm/s] bzw. [°/s]
+DEF REAL _HLx_SETUP     = 1     ; Setup-Vorwahl HLx-Phyrometer
+DEF REAL _MODUS         = 0     ; 0: Strahlstrom-Regelung ; 1: Geschwindigkeits-Regelung
+
+
+
+
+
+
+
+; ******************* end of parameter ***********************
+
+
+
+
+
+
+
+
+
+; do not modify
+
+
+
+
+
+
+
+
+
+
+
+
+
+; do not modify
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+; do not modify
+
+
+
+  _PYR_PAR[0]= _T_MIN - _T_OFF
+  _PYR_PAR[1]= _T_MAX - _T_OFF
+  _PYR_PAR[2]= _dSQ_MAX
+  _PYR_PAR[3]= _dF_MAX
+  _PYR_PAR[4]= _HLx_SETUP
+  _PYR_PAR[5]= _MODUS
+ ; _PYR_PAR[5]=
+ ; _PYR_PAR[6]=
+ ; _PYR_PAR[7]=
+ ; _PYR_PAR[8]=
+ ; _PYR_PAR[9]=
+ ; _PYR_PAR[10]=
+ ; _PYR_PAR[11]=
+ ; _PYR_PAR[12]=
+ ; _PYR_PAR[13]=
+ ; _PYR_PAR[14]=
+
+
+
+M30
+
+
+
+
+; History
+

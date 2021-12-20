@@ -1,0 +1,332 @@
+; EBH probeam K26
+; UB=60 kV, Dreieckverstaerkung, Ausheizen auf 80 mA
+; Beim Einrichten Spitze anfahren und an Kante des zu 
+; bearbeitenden Nockenpaares positionieren
+
+EXTERN PYR_INIT (INT)
+DEF REAL _PYR_PAR[10] ; Parameter-Feld f. Pyrometer-Regelung
+DEF REAL _SWX_1, _SWX_2, _SWY_1, _SWY_2, _SWXg, _Fgk, _Fnk, _dgk, _FRQ_N1, _FRQ_N2, _FRQ_NEBEN, _POS_S, _x_korr, _nP_N1, _nP_N2, _nP_NEBEN, _shift_1, _shift_2, _SQ_1, _SQ_2, _y1, _y2, _phi
+DEF REAL _T_SOLL
+DEF INT _FIG_N1, _FIG_N2, _FIG_NEBEN, _nP, _A_OFF_1, _A_OFF_2, _A_OFF, _d_StoStart_NP1, _d_StoStart_NP2, _A_Start_1,_A_Start_2
+
+DEF STRING[3] _Paket = "NP2"        ; Zu behandelndes Nockenpaket
+
+DEF REAL _T_SOLL_1   = 1.200  ; Solltemperatur NP1 
+DEF REAL _T_SOLL_2 = 1.200  ; Solltemperatur NP2
+
+DEF BOOL _VORPOS = 1      ; 1...Vorpositionierung
+DEF BOOL _ELO = 1      ; 1...ELO zum Einrichten
+DEF BOOL _AUTOPOS = 1  ; 1...Einrichtung ueber ELO und HDWS
+DEF BOOL _EBH = 1      ; 1...Starte EBH-Behandlung
+DEF BOOL _EBH_KOMPLETT = 0 ; 1...Behandle beide Nockenpaare
+
+DEF REAL _geslaenge = 63.836        ; Laenge des Kuehldorns [mm]
+
+_SQ_1 = 20            ; 49 Grundstrahlstrom [mA] NP1
+_SQ_2 = 20            ; 48 Grundstrahlstrom [mA] NP2
+_SLo = (1665+70)       ; Linsenstrom Nockenspitze [mA]
+
+_SLs = (_SLo+300)     ;Ueberfokus zur Vermeidung von AS [mA]
+_Fgk = 22         ;Vorschub EBH Grundkreis [mm/s]
+_Fnk = 18         ;Vorschub EBH Nockenkontur [mm/s]
+
+_Fp = 50       ;Positioniergeschwindigkeit [mm/s]
+
+_SWX_1 = 8.2       ; Feldbreite NP1 [mm]
+_SWX_2 = 8.4       ; Feldbreite NP2 [mm]
+_SWY_1 = -4      ; Feldlaenge NP1 [mm]
+_SWY_2 = -4      ; Feldlaenge NP2 [mm]
+
+_SWXg = 42.1    ;Abstand der beiden Haertefelder [mm]
+_x_korr = 0     ;Verschiebung der Felder in [mm], 
+                ;um Abschattung zu reduzieren
+
+_StrtPosX = 366.438        ; Startposition X [mm]
+_StrtPosY = 261.186        ; Startposition Y [mm]
+
+_shift_1 = ((_SWX_1 + _SWXg)/2) ; Kantenoffset [mm], um Feldmitte
+                                ; anzufahren 
+                                ; NP1
+_shift_2 = ((_SWX_2 + _SWXg)/2) ; NP2
+
+_A_Start_1 = 100                 ; Startpunkt NP1 bez. auf Spitze
+_A_Start_2 = 250                ; Startpunkt NP2 bez. auf Spitze
+
+_d_StoStart_NP1 = 125           ; Abstand Pos.Kerbe zu Spitze NP1
+_d_StoStart_NP2 = 138           ; Abst. Pos.Kerbe zu Spitze NP2
+
+IF _d_StoStart_NP1 > _A_Start_1
+  _A_OFF_1 = 360 - (_d_StoStart_NP1 - _A_Start_1)
+ELSE
+  _A_OFF_1 = -1*(_d_StoStart_NP1 - _A_Start_1)
+ENDIF
+
+_A_OFF_2 = -1*(_d_StoStart_NP2 - _A_Start_2)
+
+_dgk = 32     ;Grundkreisdurchmesser in mm
+
+_FIG_N1 = 44
+_nP_N1 = 162
+_FIG_N2 = 44
+_nP_N2 = 162
+_FRQ_N1 = 5100            ;Frequenz Hauptgenerator [Hz]
+_FRQ_N2 = 5100
+_FIG_NEBEN = 3
+_nP_NEBEN = 1000
+_FRQ_NEBEN = 13500             ;Frequenz Nebengenerator [Hz]
+
+;Berechnungen
+FGROUP (A)
+FGREF[A]=_dgk/2    ;vs in grad/s
+
+
+_KALWERT = 3258                 ;Kalibrierwert
+
+;************************* Hauptprogramm ************************
+
+INITIAL
+KALWERT(_KALWERT)                 ;Kalibrierwert setzen
+VEKTOR_AUS
+
+IF _VORPOS
+  MSG("Vorpositionierung")
+  REPEAT Start_Pos End_Pos
+  MSG("Teil positioniert. Weiter mit [CYCLE START]")
+  ;M00
+ENDIF
+
+
+IF _ELO
+  MSG("Teil positionieren. Weiter mit [CYCLE START]")
+  REPEAT START_ELO END_ELO
+   IF _AUTOPOS
+    REPEAT Start_Pos End_Pos
+    REPEAT Start_AutoPos End_AutoPos
+   ELSE
+    M00
+   ENDIF
+  REPEAT START_QUIT_ELO END_QUIT_ELO
+ENDIF
+
+
+IF _EBH
+  IF _EBH_KOMPLETT
+    _Paket = "NP1"
+    REPEAT START_EBH END_EBH  ; Starte EBH bei NP1
+    STOPRE
+    G1 G91 X=_SWX_1 Fms _Fp     ; Fahre zu NP2
+    _Paket = "NP2"
+    REPEAT START_EBH END_EBH  ; Starte EBH bei NP2
+  ELSE
+    MSG("Haerten aktiv!")
+    REPEAT START_EBH END_EBH
+  ENDIF
+ENDIF
+
+
+M02
+
+
+
+;================= Ende Hauptprogramm ==================
+
+; ----------- Positionieren -------------
+Start_Pos:
+  G1 G90 X=_StrtPosX Y=_StrtPosY Fms _Fp
+
+End_Pos:
+
+
+; ----------- Positionseinrichtung ----------
+Start_AutoPos:
+     ; Man steht auf Ende Kuehldorn
+  HDWS_Y
+  _y1 = $AA_IM[Y]               ; Speichere y
+  STOPRE
+     ; Man steht auf Mitte Kuehldorn
+  HDWS_X
+     ; Fahrt zum Anfang des Kuehldorns
+  G1 G91 X=-_geslaenge Fms _Fp
+  HDWS_Y
+  _y2 = $AA_IM[Y]               ; Speichere y
+  _phi = ATAN2((_y2-_y1),_geslaenge)
+     ; Fahre auf einen mittleren Y-Wert
+  G1 G91 Y=-(_y2-_y1) Fms _Fp
+     ; Gebe den Winkel aus 
+     ; (falls zu gross, koennte man Feld drehen)
+  MSG("Winkel="<<_phi)
+  M00
+     ; Falls gar keine Bearbeitung erfolgen soll 
+     ; sinnvoll zum Einrichten
+  IF NOT _EBH
+    IF _Paket == "NP1"
+       G1 G91 X=(0.5*(_SWX_1 + _SWXg)) Fms _Fp
+    ENDIF
+    IF _Paket == "NP2"
+       G1 G91 X=(_SWX_1 + (0.5*_SWX_2) + (0.5*_SWXg)) Fms _Fp
+    ENDIF
+    HDWS_A
+    GOTO END_AUTOPOS
+  ELSE
+    HDWS_A
+    IF _EBH_KOMPLETT
+           ; Fahre zum Einrichtpunkt von NP1
+      G1 G91 X=(0.5*(_SWX_1 + _SWXg)) Fms _Fp    
+    ELSE
+      IF _Paket == "NP1"
+           ; Fahre zu Mitte von NP1
+        G1 G91 X=(0.5*(_SWX_1 + _SWXg)) Fms _Fp
+      ENDIF
+      IF _Paket == "NP2"
+           ; Fahre zu Mitte von NP2
+        G1 G91 X=(_SWX_1 + (0.5*_SWX_2) + (0.5*_SWXg)) Fms _Fp  
+      ENDIF
+    ENDIF
+  ENDIF
+
+END_AutoPos:
+
+
+
+
+; ----------- ELO-Monitoring -------------
+START_ELO:
+  WRT(B_SWX,-42.5,B_SL,1669,Auff,1)
+  SNS
+
+  WRT(B_FKNR,10, B_FKSZ,85, B_FKLN,1, B_FKCOL, 10)
+  SNS
+
+  IB1SCAN    ; Aktivierung des Scanmodus 
+             ; fuer bessere Bildqualitaet
+
+  HDW_3 (B_SWX,5)          
+  COPY_SW (B_SWX,B_SWY)
+  HDW_2 (AUFF,0)
+  HDW_SL_EIN
+
+  ELO_EIN(22)
+  G4 F1
+  G0 SQ 1)
+  SQ_EIN_M0
+
+END_ELO:
+
+
+START_QUIT_ELO:
+  _POS_S = $AA_IM[A]      ;Winkel der Spitze wird gespeichert
+  
+  G0 SQ 0)
+  ELO_AUS
+  HDW_1 (0)
+  HDW_2 (0)
+  HDW_3 (0)
+  HDW_SL_AUS
+  MSG ()
+  IB100PROZENT
+
+END_QUIT_ELO:
+
+
+
+;-------------------- Behandlung ----------------------
+START_EBH:
+  IF _Paket == "NP1"
+    PYR_INIT(1161)
+    _SQs = _SQ_1
+    _FIGs = _FIG_N1
+    _nP = _nP_N1
+    _FRQs = _FRQ_N1
+    _T_SOLL = _T_SOLL_1
+    _SWXs = _SWX_1
+    _A_OFF = _A_Off_1
+  ENDIF
+  IF _Paket == "NP2"
+    PYR_INIT(1162)
+    _SQs = _SQ_2
+    _FIGs = _FIG_N2
+    _FRQs = _FRQ_N2
+    _nP = _nP_N2
+    _T_SOLL = _T_SOLL_2
+    _SWXs = _SWX_2
+    _A_OFF = _A_Off_2
+  ENDIF
+  
+  MSG("Pyrometerdaten sind uebertragen")
+  
+  
+  ;Aufruf Haertefeld
+  WRT(S_FIG,_FIGs,S_FRQ,0,S_SWX,_SWXg,S_SWY,_SWYs) 
+  SNS
+  ; Frequenzparameterierung
+  ;WRT(S_PVZH,0,S_PVZL,128)
+  ;SNS
+  ; Frequenzen parameterieren wenn neue Figur
+  PVZ_FRQ(_FRQs,_nP,0)
+  
+  ;PVZ_FRQ(_FRQ_NEBEN,_nP2,1)
+  
+  MM_GEN1(3)
+  
+  ;Aufruf Linie
+  WRT(GEN1_FIG,_FIG_NEBEN,GEN1_FRQ,_FRQ_NEBEN,GEN1_SWX,_SWXS,GEN1_SWY,0)
+  SNS
+  
+  VEKTOR_AUS
+  
+  MSG("Cycle-Start-->Beginn HAERTEN " << _Paket)
+  G0 G90  SQ 0) SL _SLs) SOY=(0)
+  
+  SU=-(_x_korr/2)
+  
+  STOPRE
+  M00
+
+  MSG("Haerte " << _Paket)
+  PYR_STRT
+  G1 G91 G64
+  A=-_A_OFF Fms _Fp       ;Vorlauf zum Startpunkt
+
+
+  IF _Paket == "NP1"
+    ; Start bei A=-100
+    A=-10 SQ _SQs) SOY=AC(0.7*_T_SOLL) SL _SLo) Fms _Fgk
+    A=-10 SOY=AC(_T_SOLL) 
+    A=-145                       ;Haerten Grundkreis
+    A=-5 FLIN Fms _Fnk
+    ; Beginn NK  
+    A=-175 
+    A=-5 FLIN Fms _Fgk
+    A=-35 
+  ENDIF
+  IF _Paket == "NP2"  
+     ; Start bei A=-250
+    A=-10 SQ _SQs) SOY=AC(0.7*_T_SOLL) SL _SLo) Fms _Fnk
+    A=-10 SOY=AC(_T_SOLL) 
+     ; Beginn NK
+    A=-175                       ;Haerten Grundkreis
+    A=-5 FLIN Fms _Fgk 
+      ; Ende NK
+    A=-180 
+  ENDIF
+
+
+    A=-1 SOY=AC(0)
+    A=-1 SQ 0) SL _SLs) ;Downslope
+  PYR_STOP
+  ;MSG("Auslauf")
+  ;A=50 
+  A=AC(_POS_S) Fms _Fp  ;Spitze anfahren
+  
+  STOPRE
+  
+  WRT(GEN1_FIG,2)
+  SNS
+  MM_GEN1(0)
+  WRT(S_FIG,6,S_SWX,50,S_SWY,50)
+  SNS
+
+
+END_EBH:
+
+

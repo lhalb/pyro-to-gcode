@@ -15,7 +15,7 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.check_data()
 
     def setup_trigger(self):
-        self.but_trim.clicked.connect(self.open_trimming)
+        # self.but_trim.clicked.connect(self.open_trimming)
         self.but_openFile.clicked.connect(self.open_file)
 
     def open_trimming(self):
@@ -50,6 +50,7 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.check_data()
 
     def check_data(self):
+        return
         buttons = [self.but_cnc, self.but_gCode, self.but_filter, self.but_trim, self.but_plot,
                    self.but_statusTrim, self.but_statusCNC, self.but_statuFilter]
         if self.df is not None:
