@@ -290,7 +290,7 @@ START_EBH:
 
   IF _Paket == "NP1"
     ; Start bei A=-100
-    A=-10 SQ _SQs) SOY=AC(0.7*_T_SOLL) SL _SLo) Fms _Fgk
+    A=-10 SQ _SQs) SOY=AC(0.7*_T_SOLL) SL _SLo) Fms _Fgk ; Start bei A=-100
     A=-10 SOY=AC(_T_SOLL) 
     A=-145                       ;Haerten Grundkreis
     A=-5 FLIN Fms _Fnk

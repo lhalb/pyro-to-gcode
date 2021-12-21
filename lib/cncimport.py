@@ -1,4 +1,6 @@
 import re
+import lib.libhelperfunctions as hf
+
 
 def import_cnc(fname):
     with open(fname) as f:
@@ -11,14 +13,15 @@ def clear_code(s):
     # replace all linebreaks
     lines = s.splitlines()
     # replace all indentations
-    lines = [l.strip() for l in lines]
+    # divide lines by ';' and just take left side (ignores comments)
+    lines = [li.strip().split(';')[0] for li in lines]
     return lines
 
 
 def find_desired_section(textlist,
                          start_string='START_EBH:'.lower(),
                          end_string=None):
-    textlist = [s.lower() for s in textlist]
+    textlist = hf.list_to_lower(textlist)
     if not end_string:
         end_string = ['END_EBH:'.lower(), 'RET'.lower()]
     try:
@@ -43,15 +46,25 @@ def find_desired_section(textlist,
 
 
 def get_parameter_mode(cnc_list, crit='if _paket'):
-    converted_list = [s.lower() for s in cnc_list]
+    converted_list = hf.list_to_lower(cnc_list)
     if any(crit in s for s in converted_list):
         mode = 'dual'
     else:
         mode = 'single'
     return mode
 
-def get_parameters(cnc,
-                   p_s, p_e, c_s, c_e, p_m, c_m, n_p='NP-1', ax_finder=None):
+
+def get_correct_part(np):
+    if np == 'NP-1':
+        n_search = 'if _paket == "NP2"'.lower()
+    elif np == 'NP-2':
+        n_search = 'if _paket == "NP1"'.lower()
+    else:
+        raise AttributeError(f"Bauteil {np} unbekannt.")
+    return n_search
+
+
+def get_parameters(cnc, start_idx=None, end_idx=None, mode='single', n_p='NP-1', ax_finder=None, comment=';'):
     if not ax_finder:
         ax_dict = {'a': {
                         'r': r'\ba{1}=\S+',
@@ -76,49 +89,94 @@ def get_parameters(cnc,
     else:
         ax_dict = ax_finder
 
-    if n_p == 'NP-1':
-        n_search = 'if _paket == "NP2"'.lower()
-    elif n_p == 'NP-2':
-        n_search = 'if _paket == "NP1"'.lower()
+
+
+    if start_idx is not None and end_idx is not None:
+        section = cnc[start_idx:end_idx]
     else:
-        raise AttributeError(f"Bauteil {n_p} unbekannt.")
+        section = cnc
 
-    para_section = cnc[p_s:p_e]
-    cnc_section = cnc[c_s:c_e]
-    if p_m == 'dual':
-        pstart, pend = find_desired_section(para_section, start_string=n_search, end_string=['ENDIF'.lower()])
-        not_p_np_s = p_s + pstart
-        not_p_np_e = p_s + pend
+    conv_data = hf.list_to_lower(section)
 
-    if c_m == 'dual':
-        cstart, cend = find_desired_section(cnc_section, start_string=n_search, end_string=['ENDIF'.lower()])
-        not_c_np_s = c_s + cstart
-        not_c_np_e = c_s + cend
-
-    contour = [s.lower() for s in cnc_section]
     exp = r'|'.join([v['r'] for k, v in ax_dict.items()])
-    erg = [e for e in (re.findall(exp, c) for c in contour) if e]
+
+    if mode == 'dual':
+        # bestimme, welcher Abschnitt gescannt werden soll
+        n_search = get_correct_part(n_p)
+        scan_start, scan_end = find_desired_section(conv_data, start_string=n_search, end_string=['ENDIF'.lower()])
+        erg = [e for e in (re.findall(exp, c) for i, c in enumerate(conv_data) if not scan_start <= i <= scan_end) if e]
+    else:
+        erg = [e for e in (re.findall(exp, c) for c in conv_data) if e]
 
     for k in ax_dict.keys():
-        ax_dict[k]['val'] = [0] * len(erg)
+        ax_dict[k]['val'] = [''] * len(erg)
         for i, stringlist in enumerate(erg):
-            if c_m == 'dual':
-                if not_c_np_s <= i <= not_c_np_e:
-                    continue
-
             for s in stringlist:
                 if re.match(ax_dict[k]['r'], s):
                     ax_dict[k]['val'][i] = re.sub(f'^{k}[= ]', '', s)
 
-    print(ax_dict)
+    return [v['val'] for k, v in ax_dict.items()]
 
 
+def get_unknown_vars(c_list):
+    flattend = hf.flatten(c_list)
+    reg_vars = r'\b_.*?\b'
+    erg = [e for e in (re.findall(reg_vars, s) for s in flattend) if e]
+    return hf.remove_duplicates(hf.flatten(erg))
+
+
+def parse_settings(c_list):
+    reg_calcs = r'\(.*?\)'
+    reg_vars = r'\b_.*?\b'
+    return
+
+
+def get_values_from_parameters(code, pars, mode='single', p_start=None, p_end=None, n_p='NP-1'):
+    def get_value(t, search):
+        pattern = fr'{search}\s.*?='
+        prog = re.compile(pattern)
+        return [s.split(';')[0].split('=')[1].strip() for s in t if '=' in s if prog.match(s)]
+
+    v_dict = {i: None for i in pars}
+
+    code = hf.list_to_lower(code)
+
+    if mode == 'single':
+        for k in v_dict.keys():
+            v_dict[k] = get_value(code, k)
+
+        par_pat = r'_\w*'
+        erg = [re.match(par_pat, v_dict[k]) for k in v_dict.keys()]
+        while any(erg):
+            for k in v_dict.keys():
+                v_dict[k] = get_value(code, k)
+
+            erg = [re.match(par_pat, v_dict[k]) for k in v_dict.keys()]
+    elif mode == 'dual':
+        para_data = code[p_start:p_end]
+        # bestimme, welcher Abschnitt gescannt werden soll
+        n_search = get_correct_part(n_p)
+        scan_start, scan_end = find_desired_section(para_data, start_string=n_search, end_string=['ENDIF'.lower()])
+        par_definition = [el for i, el in enumerate(para_data) if not scan_start <= i <= scan_end]
+        for k in v_dict.keys():
+            v_dict[k] = get_value(par_definition, k)
+            if not v_dict[k]:
+                v_dict[k] = get_value(code, k)
+
+        par_pat = r'_\w*'
+        erg = [re.match(par_pat, v_dict[k]) for k in v_dict.keys()]
+        while any(erg):
+            for k in v_dict.keys():
+                v_dict[k] = get_value(code, k)
+
+            erg = [re.match(par_pat, v_dict[k]) for k in v_dict.keys()]
+
+    return v_dict
 
 
 if __name__ == "__main__":
     filename = "../data/EBH_347_BS.MPF"
     nst = 'NP-1'
-
 
     raw_cnc = import_cnc(filename)
     cnc = clear_code(raw_cnc)
@@ -134,7 +192,14 @@ if __name__ == "__main__":
     contour_cnc = cnc[strt+c_strt:strt+c_end]
     contour_mode = get_parameter_mode(contour_cnc)
 
-    get_parameters(cnc, strt, strt+c_strt, strt+c_strt, strt+c_end, par_mode, contour_mode, n_p=nst)
+    contour_parameters = get_parameters(contour_cnc, mode=contour_mode, n_p=nst)
+
+    unknown_vars = get_unknown_vars(contour_parameters)
+
+    values = get_values_from_parameters(cnc, unknown_vars, p_start=strt, p_end=strt+c_strt, mode=par_mode)
+
+    print(unknown_vars, values)
+
 
 
 
