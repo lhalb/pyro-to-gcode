@@ -89,8 +89,6 @@ def get_parameters(cnc, start_idx=None, end_idx=None, mode='single', n_p='NP-1',
     else:
         ax_dict = ax_finder
 
-
-
     if start_idx is not None and end_idx is not None:
         section = cnc[start_idx:end_idx]
     else:
@@ -135,7 +133,17 @@ def get_values_from_parameters(code, pars, mode='single', p_start=None, p_end=No
     def get_value(t, search):
         pattern = fr'{search}\s.*?='
         prog = re.compile(pattern)
-        return [s.split(';')[0].split('=')[1].strip() for s in t if '=' in s if prog.match(s)]
+
+        for s in t:
+            if prog.search(s) and '=' in s:
+                result = s.split(';')[0].split('=')[1].strip()
+                break
+            else:
+                result = []
+
+        # result = [s.split(';')[0].split('=')[1].strip() for s in t if '=' in s if prog.match(s)]
+
+        return result
 
     v_dict = {i: None for i in pars}
 
@@ -162,14 +170,25 @@ def get_values_from_parameters(code, pars, mode='single', p_start=None, p_end=No
             v_dict[k] = get_value(par_definition, k)
             if not v_dict[k]:
                 v_dict[k] = get_value(code, k)
-
         par_pat = r'_\w*'
-        erg = [re.match(par_pat, v_dict[k]) for k in v_dict.keys()]
+        erg = [re.search(par_pat, v_dict[k]) for k in v_dict.keys()]
         while any(erg):
             for k in v_dict.keys():
-                v_dict[k] = get_value(code, k)
-
-            erg = [re.match(par_pat, v_dict[k]) for k in v_dict.keys()]
+                match = re.findall(par_pat, v_dict[k])
+                if not match:
+                    continue
+                old_val = match
+                find_vals = [get_value(code, ov) for ov in old_val]
+                if not all(find_vals):
+                    print(f'Kann >>{old_val}<< nicht finden')
+                    erg = False
+                    break
+                for old, new in zip(old_val, find_vals):
+                    v_dict[k] = v_dict[k].replace(old, new)
+            if not erg:
+                break
+            else:
+                erg = [re.search(par_pat, v_dict[k]) for k in v_dict.keys()]
 
     return v_dict
 
@@ -198,7 +217,7 @@ if __name__ == "__main__":
 
     values = get_values_from_parameters(cnc, unknown_vars, p_start=strt, p_end=strt+c_strt, mode=par_mode)
 
-    print(unknown_vars, values)
+    print(values)
 
 
 
