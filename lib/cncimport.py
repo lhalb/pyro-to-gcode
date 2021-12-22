@@ -123,6 +123,31 @@ def get_unknown_vars(c_list):
     return hf.remove_duplicates(hf.flatten(erg))
 
 
+# def evaluate_value(v_list):
+#     decline_pattern =
+#     for i, v in enumerate(v_list):
+#         if
+
+def replace_missing_values(input_list, replace_dict):
+    def replace_with_dict(li, r_dict):
+        list_to_string = ''.join(li)
+        newlist = li.copy()
+        print('Vorher: ', newlist)
+        for i, el in enumerate(li):
+            for key, value in r_dict.items():
+                if key in list_to_string and key in el:
+                    print(key)
+                    newlist[i] = el.replace(key, str(value))
+        print('Nachher: ', newlist)
+        return newlist
+
+    p_list = input_list[:]
+
+    outlist = [replace_with_dict(sl, replace_dict) for sl in p_list]
+
+    return outlist
+
+
 def parse_settings(c_list):
     reg_calcs = r'\(.*?\)'
     reg_vars = r'\b_.*?\b'
@@ -190,6 +215,12 @@ def get_values_from_parameters(code, pars, mode='single', p_start=None, p_end=No
             else:
                 erg = [re.search(par_pat, v_dict[k]) for k in v_dict.keys()]
 
+    for k in v_dict.keys():
+        try:
+            v_dict[k] = eval(v_dict[k])
+        except ValueError:
+            continue
+
     return v_dict
 
 
@@ -217,7 +248,14 @@ if __name__ == "__main__":
 
     values = get_values_from_parameters(cnc, unknown_vars, p_start=strt, p_end=strt+c_strt, mode=par_mode)
 
+    print(contour_parameters)
+    corrected_values = replace_missing_values(contour_parameters, values)
+    print(contour_parameters)
     print(values)
+
+    print(corrected_values)
+
+
 
 
 
