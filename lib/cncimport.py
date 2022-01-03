@@ -67,25 +67,30 @@ def get_correct_part(np):
 def get_parameters(cnc, start_idx=None, end_idx=None, mode='single', n_p='NP-1', ax_finder=None, comment=';'):
     if not ax_finder:
         ax_dict = {'a': {
-                        'r': r'\ba{1}=\S+',
-                        'val': []
-                   },
-                   'sq': {
-                        'r': r'\bsq\s+\S*',
-                        'val': []
-                   },
-                   'sl': {
-                       'r': r'\bsl\s+\S*',
-                       'val': []
-                   },
-                   'fms': {
-                       'r': r'\bfms\s+\S*',
-                       'val': []
-                   },
-                   'soy': {
-                       'r': r'\bsoy\S+',
-                       'val': []}
-                   }
+            'r': r'\ba{1}=\S+',
+            'val': []
+        },
+            'sq': {
+                'r': r'\bsq\s+\S*',
+                'val': []
+            },
+            'sl': {
+                'r': r'\bsl\s+\S*',
+                'val': []
+            },
+            'fms': {
+                'r': r'\bfms\s+\S*',
+                'val': []
+            },
+            'soy': {
+                'r': r'\bsoy\S+',
+                'val': []
+            },
+            'g': {
+                'r': r'g90|g91',
+                'val': []
+            }
+        }
     else:
         ax_dict = ax_finder
 
@@ -113,7 +118,7 @@ def get_parameters(cnc, start_idx=None, end_idx=None, mode='single', n_p='NP-1',
                 if re.match(ax_dict[k]['r'], s):
                     ax_dict[k]['val'][i] = re.sub(f'^{k}[= ]', '', s)
 
-    return [v['val'] for k, v in ax_dict.items()]
+    return {k: v['val'] for k, v in ax_dict.items()}
 
 
 def get_unknown_vars(c_list):
@@ -123,29 +128,46 @@ def get_unknown_vars(c_list):
     return hf.remove_duplicates(hf.flatten(erg))
 
 
-# def evaluate_value(v_list):
-#     decline_pattern =
-#     for i, v in enumerate(v_list):
-#         if
+def gcode_to_values(code_dict, lead_axis='a', inc=5, offset=True):
+    # wenn im dictionary keine G-Saetze enthalten sind
+    cd = code_dict
+    if 'g' not in cd.keys() or not cd['g']:
+        raise AttributeError('No G-sets defined!')
 
-def replace_missing_values(input_list, replace_dict):
+    if lead_axis not in cd.keys():
+        raise AttributeError('Leading Axis not properly defined')
+
+    lead_conv = [hf.maybeMakeNumber(s) for s in cd[lead_axis]]
+    try:
+        sum_lead = sum([l for l in lead_conv if l])
+    except TypeError:
+        raise TypeError('Leading axis has unpredicted types')
+
+    try:
+        first_el = next(item for item in lead_conv if item is not None)
+    except StopIteration:
+        raise ValueError('No matching Values found')
+
+    if offset:
+        sum_lead -= first_el
+
+
+    return True
+
+
+def replace_missing_values(input_dict, replace_dict):
     def replace_with_dict(li, r_dict):
         list_to_string = ''.join(li)
         newlist = li.copy()
-        print('Vorher: ', newlist)
         for i, el in enumerate(li):
             for key, value in r_dict.items():
                 if key in list_to_string and key in el:
-                    print(key)
                     newlist[i] = el.replace(key, str(value))
-        print('Nachher: ', newlist)
         return newlist
 
-    p_list = input_list[:]
+    outdict = {key: replace_with_dict(input_dict[key], replace_dict) for key in input_dict.keys()}
 
-    outlist = [replace_with_dict(sl, replace_dict) for sl in p_list]
-
-    return outlist
+    return outdict
 
 
 def parse_settings(c_list):
@@ -227,6 +249,8 @@ def get_values_from_parameters(code, pars, mode='single', p_start=None, p_end=No
 if __name__ == "__main__":
     filename = "../data/EBH_347_BS.MPF"
     nst = 'NP-1'
+    leading_axis = 'a'
+    increment = 1
 
     raw_cnc = import_cnc(filename)
     cnc = clear_code(raw_cnc)
@@ -236,30 +260,25 @@ if __name__ == "__main__":
 
     c_strt, c_end = find_desired_section(ebh_cnc, start_string='PYR_STRT'.lower(), end_string=['PYR_STOP'.lower()])
 
-    par_cnc = cnc[strt:strt+c_strt]
+    par_cnc = cnc[strt:strt + c_strt]
     par_mode = get_parameter_mode(par_cnc)
 
-    contour_cnc = cnc[strt+c_strt:strt+c_end]
+    contour_cnc = cnc[strt + c_strt:strt + c_end]
     contour_mode = get_parameter_mode(contour_cnc)
 
     contour_parameters = get_parameters(contour_cnc, mode=contour_mode, n_p=nst)
 
-    unknown_vars = get_unknown_vars(contour_parameters)
+    unknown_vars = get_unknown_vars(contour_parameters.values())
 
-    values = get_values_from_parameters(cnc, unknown_vars, p_start=strt, p_end=strt+c_strt, mode=par_mode)
+    if '_' + leading_axis + '_off' in unknown_vars:
+        lead_offset = True
+    else:
+        lead_offset = False
 
-    print(contour_parameters)
+    values = get_values_from_parameters(cnc, unknown_vars, p_start=strt, p_end=strt + c_strt, mode=par_mode)
+
     corrected_values = replace_missing_values(contour_parameters, values)
-    print(contour_parameters)
-    print(values)
 
-    print(corrected_values)
-
-
-
-
-
-
-
+    gcode = gcode_to_values(corrected_values, inc=increment, offset=lead_offset)
 
 
