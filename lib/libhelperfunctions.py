@@ -1,4 +1,32 @@
-import numpy as np
+from PyQt5.QtWidgets import QTableWidgetItem as QTI
+from PyQt5.QtWidgets import QTableWidget
+
+
+def dict_to_table(d: dict, table: QTableWidget):
+    columns = len(d.keys())
+    rows = max([len(d.get(k)) for k in d.keys()])
+
+    tab = table
+    tab.setRowCount(rows)
+    tab.setColumnCount(columns)
+    horheaders = []
+    for i, k in enumerate(sorted(d.keys())):
+        horheaders.append(k)
+        for j, el in enumerate(d[k]):
+            newitem = QTI(el)
+            tab.setItem(j, i, newitem)
+    tab.setHorizontalHeaderLabels(horheaders)
+
+
+def table_to_dict(table: QTableWidget):
+    d = {}
+    tab = table
+    for n in range(tab.columnCount()):
+        k = tab.horizontalHeaderItem(n).text()
+        d[k] = [None] * tab.rowCount()
+        for m in range(tab.rowCount()):
+            d[k][m] = tab.item(m, n).text()
+    return d
 
 
 def flatten(t):

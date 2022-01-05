@@ -132,12 +132,16 @@ def get_unknown_vars(c_list):
     return hf.remove_duplicates(hf.flatten(erg))
 
 
+def evaluate_pb_expression(s):
+    pat = r'([IiAa][Cc]\(|\))'
+    return eval(re.sub(pat, '', s))
+
+
 def gcode_to_values(code_dict, lead_axis='a', g_start='g91', inc=5.0, offset=True, force_fill=False):
     def get_distance(start, gs, val):
         if not val:
             return 0
-        pat = r'([IiAa][Cc]\(|\))'
-        calc_val = eval(re.sub(pat, '', val))
+        calc_val = evaluate_pb_expression(val)
         # Wenn Absolutwerte angenommen werden sollen
         if (')' in val and '(' not in val) or re.search(r'[AaCc]\(', val) or (gs == 'g90'):
             dist = calc_val - start
@@ -333,6 +337,16 @@ def print_data(d: dict):
     plt.show()
 
 
+def detect_offset(pars: dict, ax: str):
+    for i, el in enumerate(pars.get(ax)):
+        if el:
+            row = i
+            break
+    offset = any([k for k in pars.keys() if k not in ['fms', 'g']])
+
+    return offset
+
+
 if __name__ == "__main__":
     filename = "../data/EBH_347_BS.MPF"
     nst = 'NP-1'
@@ -340,21 +354,26 @@ if __name__ == "__main__":
     increment = 0.25
     force_calc = False
 
+    # importiere die Datei
     raw_cnc = import_cnc(filename)
+
+    # bearbeite den CNC-Code
     cnc = clear_code(raw_cnc)
 
+    # finde die Parameter
     strt, end = find_desired_section(cnc)
     ebh_cnc = cnc[strt:end]
 
     c_strt, c_end = find_desired_section(ebh_cnc, start_string='PYR_STRT'.lower(), end_string=['PYR_STOP'.lower()])
 
-    par_cnc = cnc[strt:strt + c_strt]
-    par_mode = get_parameter_mode(par_cnc)
-
     contour_cnc = cnc[strt + c_strt:strt + c_end]
     contour_mode = get_parameter_mode(contour_cnc)
 
     contour_parameters = get_parameters(contour_cnc, mode=contour_mode, n_p=nst)
+
+    # untersuche die Parameter auf Variablen
+    par_cnc = cnc[strt:strt + c_strt]
+    par_mode = get_parameter_mode(par_cnc)
 
     unknown_vars = get_unknown_vars(contour_parameters.values())
 
@@ -367,6 +386,7 @@ if __name__ == "__main__":
 
     corrected_values = replace_missing_values(contour_parameters, values)
 
+    # erzeuge aus der Tabelle Messwerte
     while True:
         try:
             gcode = gcode_to_values(corrected_values, inc=increment, offset=lead_offset, force_fill=force_calc)
@@ -392,7 +412,6 @@ if __name__ == "__main__":
                 else:
                     print('Unsupported Answer.')
 
-    print(corrected_values)
     print_data(gcode)
 
 

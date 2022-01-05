@@ -6,9 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>529</width>
-    <height>896</height>
+    <width>520</width>
+    <height>423</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>0</width>
+    <height>0</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>G-Code Converter</string>
@@ -17,15 +29,8 @@
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="3" column="1">
-       <widget class="QPushButton" name="but_statusCNC">
-        <property name="text">
-         <string>Status</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QPushButton" name="but_statusTrim">
+      <item row="0" column="1">
+       <widget class="QPushButton" name="but_status_import">
         <property name="text">
          <string>Status</string>
         </property>
@@ -41,42 +46,18 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QPushButton" name="but_status_import">
-        <property name="text">
-         <string>Status</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QPushButton" name="but_statuFilter">
-        <property name="text">
-         <string>Status</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0" colspan="2">
-       <widget class="QPushButton" name="but_gCode">
-        <property name="text">
-         <string>MAKE G-Code</string>
-        </property>
-        <property name="shortcut">
-         <string>Ctrl+Return</string>
-        </property>
-       </widget>
-      </item>
      </layout>
     </item>
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_4">
       <property name="topMargin">
-       <number>10</number>
+       <number>0</number>
       </property>
       <property name="rightMargin">
-       <number>10</number>
+       <number>0</number>
       </property>
       <property name="bottomMargin">
-       <number>10</number>
+       <number>0</number>
       </property>
       <item>
        <widget class="MplWidget" name="plotwidget" native="true">
@@ -102,13 +83,30 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>25</height>
+         </size>
+        </property>
         <property name="tabPosition">
          <enum>QTabWidget::North</enum>
         </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>5</number>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>12</width>
+          <height>12</height>
+         </size>
         </property>
         <widget class="QWidget" name="tab">
+         <attribute name="icon">
+          <iconset>
+           <normalon>:/img/red.png</normalon>
+          </iconset>
+         </attribute>
          <attribute name="title">
           <string>Trimming</string>
          </attribute>
@@ -155,7 +153,7 @@
                <string>d000</string>
               </property>
               <property name="text">
-               <string>500</string>
+               <string>550</string>
               </property>
              </widget>
             </item>
@@ -257,22 +255,32 @@
          </layout>
         </widget>
         <widget class="QWidget" name="tab_2">
+         <attribute name="icon">
+          <iconset resource="icons/icns.qrc">
+           <normaloff>:/img/red.png</normaloff>:/img/red.png</iconset>
+         </attribute>
          <attribute name="title">
           <string>Filter</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_7">
           <item>
            <widget class="QToolBox" name="toolBox">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>200</height>
+             </size>
+            </property>
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="page">
              <property name="geometry">
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>476</width>
-               <height>71</height>
+               <width>459</width>
+               <height>70</height>
               </rect>
              </property>
              <attribute name="label">
@@ -391,7 +399,7 @@
                <x>0</x>
                <y>0</y>
                <width>476</width>
-               <height>204</height>
+               <height>171</height>
               </rect>
              </property>
              <attribute name="label">
@@ -442,9 +450,9 @@
              <number>0</number>
             </property>
             <item>
-             <widget class="QPushButton" name="but_filt_apply">
+             <widget class="QPushButton" name="but_filt_undo">
               <property name="text">
-               <string>Apply</string>
+               <string>Undo</string>
               </property>
              </widget>
             </item>
@@ -462,9 +470,9 @@
              </spacer>
             </item>
             <item>
-             <widget class="QPushButton" name="but_filt_undo">
+             <widget class="QPushButton" name="but_filt_apply">
               <property name="text">
-               <string>Undo</string>
+               <string>Apply</string>
               </property>
              </widget>
             </item>
@@ -473,6 +481,10 @@
          </layout>
         </widget>
         <widget class="QWidget" name="tab_3">
+         <attribute name="icon">
+          <iconset resource="icons/icns.qrc">
+           <normaloff>:/img/red.png</normaloff>:/img/red.png</iconset>
+         </attribute>
          <attribute name="title">
           <string>CNC</string>
          </attribute>
@@ -480,6 +492,9 @@
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_6">
             <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
              <number>0</number>
             </property>
             <item>
@@ -496,17 +511,61 @@
              </widget>
             </item>
             <item>
-             <spacer name="horizontalSpacer_5">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
+             <layout class="QFormLayout" name="formLayout_3">
+              <property name="formAlignment">
+               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
               </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
+              <property name="topMargin">
+               <number>0</number>
               </property>
-             </spacer>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <item row="0" column="1">
+               <widget class="QComboBox" name="cb_leading_axis">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>30</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>A</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>X</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Y</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_13">
+                <property name="text">
+                 <string>Lead Axis</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
             <item>
              <layout class="QFormLayout" name="formLayout_4">
@@ -521,9 +580,49 @@
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="QDoubleSpinBox" name="sb_cnc_ang"/>
+               <widget class="QDoubleSpinBox" name="sb_cnc_ang">
+                <property name="suffix">
+                 <string/>
+                </property>
+                <property name="singleStep">
+                 <double>0.050000000000000</double>
+                </property>
+                <property name="stepType">
+                 <enum>QAbstractSpinBox::AdaptiveDecimalStepType</enum>
+                </property>
+                <property name="value">
+                 <double>0.250000000000000</double>
+                </property>
+               </widget>
               </item>
              </layout>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_5">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="but_import_gcode">
+              <property name="text">
+               <string>Open G-Code</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="but_import_par">
+              <property name="text">
+               <string>Open PYR_PAR</string>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>
@@ -536,6 +635,48 @@
              <number>0</number>
             </property>
             <item>
+             <widget class="QGroupBox" name="groupBox_2">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="title">
+               <string>Contour Parameters</string>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_9">
+               <property name="leftMargin">
+                <number>2</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>2</number>
+               </property>
+               <property name="bottomMargin">
+                <number>2</number>
+               </property>
+               <item>
+                <widget class="QTableWidget" name="tab_cnc_cont">
+                 <property name="alternatingRowColors">
+                  <bool>true</bool>
+                 </property>
+                 <attribute name="horizontalHeaderDefaultSectionSize">
+                  <number>50</number>
+                 </attribute>
+                 <column>
+                  <property name="text">
+                   <string>test</string>
+                  </property>
+                 </column>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
              <widget class="QGroupBox" name="groupBox">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
@@ -544,14 +685,26 @@
                </sizepolicy>
               </property>
               <property name="title">
-               <string>Regelung</string>
+               <string>Control</string>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
+               <property name="spacing">
+                <number>0</number>
+               </property>
+               <property name="leftMargin">
+                <number>2</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>2</number>
+               </property>
+               <property name="bottomMargin">
+                <number>2</number>
+               </property>
                <item>
                 <layout class="QFormLayout" name="formLayout_2">
-                 <property name="sizeConstraint">
-                  <enum>QLayout::SetMinimumSize</enum>
-                 </property>
                  <item row="0" column="0">
                   <widget class="QLabel" name="label_10">
                    <property name="text">
@@ -591,87 +744,6 @@
               </layout>
              </widget>
             </item>
-            <item>
-             <widget class="QGroupBox" name="groupBox_2">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="title">
-               <string>Kontur</string>
-              </property>
-              <layout class="QVBoxLayout" name="verticalLayout_9">
-               <item>
-                <widget class="QTableWidget" name="tab_cnc_cont">
-                 <property name="editTriggers">
-                  <set>QAbstractItemView::DoubleClicked</set>
-                 </property>
-                 <property name="alternatingRowColors">
-                  <bool>true</bool>
-                 </property>
-                 <property name="selectionMode">
-                  <enum>QAbstractItemView::SingleSelection</enum>
-                 </property>
-                 <attribute name="horizontalHeaderVisible">
-                  <bool>false</bool>
-                 </attribute>
-                 <attribute name="horizontalHeaderCascadingSectionResizes">
-                  <bool>false</bool>
-                 </attribute>
-                 <attribute name="horizontalHeaderDefaultSectionSize">
-                  <number>50</number>
-                 </attribute>
-                 <attribute name="horizontalHeaderHighlightSections">
-                  <bool>false</bool>
-                 </attribute>
-                 <attribute name="horizontalHeaderStretchLastSection">
-                  <bool>false</bool>
-                 </attribute>
-                 <attribute name="verticalHeaderVisible">
-                  <bool>false</bool>
-                 </attribute>
-                 <attribute name="verticalHeaderCascadingSectionResizes">
-                  <bool>false</bool>
-                 </attribute>
-                 <column>
-                  <property name="text">
-                   <string>ANG</string>
-                  </property>
-                  <property name="textAlignment">
-                   <set>AlignCenter</set>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>IB</string>
-                  </property>
-                  <property name="textAlignment">
-                   <set>AlignCenter</set>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>IL</string>
-                  </property>
-                  <property name="textAlignment">
-                   <set>AlignCenter</set>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>vs</string>
-                  </property>
-                  <property name="textAlignment">
-                   <set>AlignCenter</set>
-                  </property>
-                 </column>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-            </item>
            </layout>
           </item>
           <item>
@@ -680,9 +752,9 @@
              <number>0</number>
             </property>
             <item>
-             <widget class="QPushButton" name="pushButton_2">
+             <widget class="QPushButton" name="but_clear_cnc">
               <property name="text">
-               <string>Apply</string>
+               <string>Undo</string>
               </property>
              </widget>
             </item>
@@ -700,9 +772,9 @@
              </spacer>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton_3">
+             <widget class="QPushButton" name="but_cnc_apply">
               <property name="text">
-               <string>Undo</string>
+               <string>Apply</string>
               </property>
              </widget>
             </item>
@@ -714,6 +786,18 @@
          <attribute name="title">
           <string>Export</string>
          </attribute>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QPushButton" name="but_gCode">
+            <property name="text">
+             <string>MAKE G-Code</string>
+            </property>
+            <property name="shortcut">
+             <string>Ctrl+Return</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
         <widget class="QWidget" name="tab_6">
          <attribute name="title">
@@ -729,46 +813,6 @@
       </item>
      </layout>
     </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <item>
-       <spacer name="horizontalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButton">
-        <property name="text">
-         <string>PushButton</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
-    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -776,7 +820,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>529</width>
+     <width>520</width>
      <height>21</height>
     </rect>
    </property>
@@ -796,6 +840,8 @@
    <header>gui.toggleswitch.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="icons/icns.qrc"/>
+ </resources>
  <connections/>
 </ui>

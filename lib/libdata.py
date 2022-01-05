@@ -34,7 +34,7 @@ def reset_timescale(data):
     return timespan
 
 
-def plot_data(d, ib=None, cnc=None, filt=None, sv=None):
+def plot_data(d, ib=None, cnc=None, filt=None):
     fig, ax = plt.subplots()
     x = d['Zeit'] * 10e-9
     y11 = d['Temperatur']
@@ -53,7 +53,6 @@ def plot_data(d, ib=None, cnc=None, filt=None, sv=None):
         else:
             if i == 0:
                 y2_list.append(d['P-Ausgabe'])
-
 
     if y2_list:
         ax2 = ax.twinx()
