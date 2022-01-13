@@ -86,14 +86,14 @@
         <property name="maximumSize">
          <size>
           <width>16777215</width>
-          <height>3000</height>
+          <height>180</height>
          </size>
         </property>
         <property name="tabPosition">
          <enum>QTabWidget::North</enum>
         </property>
         <property name="currentIndex">
-         <number>3</number>
+         <number>0</number>
         </property>
         <property name="iconSize">
          <size>
@@ -282,8 +282,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>476</width>
-               <height>119</height>
+               <width>459</width>
+               <height>70</height>
               </rect>
              </property>
              <attribute name="label">

@@ -58,7 +58,6 @@ def remove_duplicates(t):
 def maybeMakeNumber(s):
     """Returns a string 's' into a integer if possible, a float if needed or
     returns it as is."""
-
     # handle None, "", 0
     if not s:
         return None

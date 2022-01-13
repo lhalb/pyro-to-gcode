@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.signal import savgol_filter, medfilt
+import lib.libhelperfunctions as hf
 pd.options.mode.chained_assignment = None
 matplotlib.use('Qt5Agg')
 
@@ -119,7 +120,36 @@ def plot_data(d, ib=None, cnc=None, filt=None):
     plt.show()
 
 
-def export_data_to_gcode(path: str, data: pd.DataFrame, la: str):
+def export_data_to_gcode(data: pd.DataFrame, la: str):
+    def make_string(lax, laxv, keys, vals, prec=6):
+        start = f'{lax.upper()}={round(laxv, prec)}'
+        mi = []
+        end = []
+        for k, v in zip(keys, vals):
+            if k == 'fms':
+                end = f'Fms {hf.maybeMakeNumber(v)}'
+            elif k in ['sq', 'sl']:
+                mi.append(f'{k.upper()} ({round(v, 2)}+_{k.upper()}_OFF))')
+            else:
+                mi.append(f'{k.upper()}={round(v, prec)}')
+        middle = ' '.join(mi)
+        return ' '.join([start, middle, end])
+    # Header schreiben
     header = 'CONTOUR:\nG1 G91 G64'
+    # Führungsachse inkrementell schreiben
+    incremental_lead = np.ediff1d(data[la.lower()], to_begin=data[la.lower()].iloc[0])
+    # Führungsachse aus den restlichen Daten entfernen
+    data.drop(la.lower(), axis=1, inplace=True)
 
-    return
+    body_strings = [make_string(la, incremental_lead[i], data.keys(), data.iloc[i]) for i in range(len(data.index))]
+
+    body = '\n'.join(body_strings)
+
+    footer = '\nRET'
+
+    return '\n'.join([header, body, footer])
+
+
+def save_gcode(path: str, code: str):
+    with open(path, 'w') as f:
+        f.write(code)

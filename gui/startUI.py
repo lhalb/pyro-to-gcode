@@ -34,7 +34,6 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.check_data()
 
     def setup_trigger(self):
-        # self.but_trim.clicked.connect(self.open_trimming)
         self.but_openFile.clicked.connect(self.import_data)
         self.but_import_gcode.clicked.connect(self.open_cnc_import)
         self.but_cnc_apply.clicked.connect(self.make_cnc_data_from_parameters)
@@ -61,7 +60,7 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.but_export_xlsx_trimmed.clicked.connect(lambda: self.export_xls('trimmed'))
         self.but_export_xlsx_filtered.clicked.connect(lambda: self.export_xls('filtered'))
         self.but_export_xlsx_cnc.clicked.connect(lambda: self.export_xls('cnc'))
-        self.but_gCode.clicked.connect(self.export_gcdoe)
+        self.but_gCode.clicked.connect(self.export_gcode)
 
     def export_gcode(self):
         if self.cnc_data is not None:
@@ -74,8 +73,13 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
         if not fname:
             return
 
-        ld.export_data_to_gcode(fname, dat, lead_ax)
+        dat['sq'] = dat['P-Ausgabe']
+        dat.drop(['Zeit', 'P-fakt', 'P-Ausgabe'], axis=1, inplace=True)
 
+        g_code = ld.export_data_to_gcode(dat, lead_ax)
+
+        # kann man sich jetzt hier nochmal anzeigen lassen
+        ld.save_gcode(fname, g_code)
 
 
     def export_xls(self, data='raw'):
