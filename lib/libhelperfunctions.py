@@ -1,5 +1,19 @@
+import pandas as pd
+from math import ceil
 from PyQt5.QtWidgets import QTableWidgetItem as QTI
 from PyQt5.QtWidgets import QTableWidget
+
+
+def dict_to_dataframe(d: dict):
+    return pd.DataFrame.from_dict(d)
+
+
+def to_series(n, col_name):
+    return pd.Series(data=n, name=col_name)
+
+
+def round_to_odd(d):
+    return ceil(d / 2) * 2 + 1
 
 
 def dict_to_table(d: dict, table: QTableWidget):

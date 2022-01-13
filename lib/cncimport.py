@@ -221,7 +221,7 @@ def gcode_to_values(code_dict, lead_axis='a', g_start='g91', inc=5.0, offset=Tru
                         stop_val = start_val
                     else:
                         stop_val = eval(v)
-                    vals = np.repeat(stop_val, s+1)
+                    vals = np.repeat(stop_val, s+add)
                 else:
                     g = cd['g'][i]
                     stop_val = start_val + get_distance(start_val, g, v)
@@ -258,22 +258,20 @@ def parse_settings(c_list):
     return
 
 
+def get_value(t, search):
+    pattern = fr'{search}\s.*?='
+    prog = re.compile(pattern)
+
+    result = []
+    for s in t:
+        if prog.search(s) and '=' in s:
+            result = s.split(';')[0].split('=')[1].strip()
+            break
+
+    return result
+
+
 def get_values_from_parameters(code, pars, mode='single', p_start=None, p_end=None, n_p='NP-1'):
-    def get_value(t, search):
-        pattern = fr'{search}\s.*?='
-        prog = re.compile(pattern)
-
-        for s in t:
-            if prog.search(s) and '=' in s:
-                result = s.split(';')[0].split('=')[1].strip()
-                break
-            else:
-                result = []
-
-        # result = [s.split(';')[0].split('=')[1].strip() for s in t if '=' in s if prog.match(s)]
-
-        return result
-
     v_dict = {i: None for i in pars}
 
     code = hf.list_to_lower(code)

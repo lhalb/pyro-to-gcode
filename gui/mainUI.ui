@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>520</width>
-    <height>423</height>
+    <height>716</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -86,14 +86,14 @@
         <property name="maximumSize">
          <size>
           <width>16777215</width>
-          <height>25</height>
+          <height>3000</height>
          </size>
         </property>
         <property name="tabPosition">
          <enum>QTabWidget::North</enum>
         </property>
         <property name="currentIndex">
-         <number>5</number>
+         <number>3</number>
         </property>
         <property name="iconSize">
          <size>
@@ -232,6 +232,9 @@
             </item>
             <item>
              <widget class="QPushButton" name="but_trim_undo">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
               <property name="text">
                <string>Undo</string>
               </property>
@@ -264,7 +267,7 @@
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_7">
           <item>
-           <widget class="QToolBox" name="toolBox">
+           <widget class="QToolBox" name="tb_filt">
             <property name="maximumSize">
              <size>
               <width>16777215</width>
@@ -279,8 +282,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>459</width>
-               <height>70</height>
+               <width>476</width>
+               <height>119</height>
               </rect>
              </property>
              <attribute name="label">
@@ -298,6 +301,15 @@
                 </item>
                 <item>
                  <widget class="QSlider" name="para_filt_sav_n">
+                  <property name="minimum">
+                   <number>3</number>
+                  </property>
+                  <property name="singleStep">
+                   <number>1</number>
+                  </property>
+                  <property name="pageStep">
+                   <number>1</number>
+                  </property>
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
                   </property>
@@ -315,6 +327,12 @@
                    <font>
                     <pointsize>6</pointsize>
                    </font>
+                  </property>
+                  <property name="inputMask">
+                   <string>9000</string>
+                  </property>
+                  <property name="text">
+                   <string>3</string>
                   </property>
                  </widget>
                 </item>
@@ -360,10 +378,18 @@
                  </widget>
                 </item>
                 <item row="1" column="1">
-                 <widget class="QSpinBox" name="para_filt_sav_poly"/>
+                 <widget class="QSpinBox" name="para_filt_sav_poly">
+                  <property name="value">
+                   <number>1</number>
+                  </property>
+                 </widget>
                 </item>
                 <item row="1" column="5">
-                 <widget class="QDoubleSpinBox" name="para_filt_sav_delta"/>
+                 <widget class="QDoubleSpinBox" name="para_filt_sav_delta">
+                  <property name="minimum">
+                   <double>1.000000000000000</double>
+                  </property>
+                 </widget>
                 </item>
                 <item row="1" column="7">
                  <widget class="QComboBox" name="para_filt_sav_mode">
@@ -399,7 +425,7 @@
                <x>0</x>
                <y>0</y>
                <width>476</width>
-               <height>171</height>
+               <height>119</height>
               </rect>
              </property>
              <attribute name="label">
@@ -417,13 +443,16 @@
                 </item>
                 <item>
                  <widget class="QSlider" name="para_filt_med_n">
+                  <property name="minimum">
+                   <number>3</number>
+                  </property>
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="txt_para_filt_n_med">
+                 <widget class="QLineEdit" name="txt_para_filt_med_n">
                   <property name="maximumSize">
                    <size>
                     <width>60</width>
@@ -432,6 +461,53 @@
                   </property>
                   <property name="inputMask">
                    <string>d00000000</string>
+                  </property>
+                  <property name="text">
+                   <string>3</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="page_3">
+             <attribute name="label">
+              <string>Rolling Average</string>
+             </attribute>
+             <layout class="QVBoxLayout" name="verticalLayout_10">
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_9">
+                <item>
+                 <widget class="QLabel" name="label_14">
+                  <property name="text">
+                   <string>n</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QSlider" name="para_filt_rol_n">
+                  <property name="minimum">
+                   <number>3</number>
+                  </property>
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="txt_para_filt_rol_n">
+                  <property name="maximumSize">
+                   <size>
+                    <width>60</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="inputMask">
+                   <string>d00000000</string>
+                  </property>
+                  <property name="text">
+                   <string>3</string>
                   </property>
                  </widget>
                 </item>
@@ -753,8 +829,11 @@
             </property>
             <item>
              <widget class="QPushButton" name="but_clear_cnc">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
               <property name="text">
-               <string>Undo</string>
+               <string>Clear CNC</string>
               </property>
              </widget>
             </item>
@@ -773,6 +852,9 @@
             </item>
             <item>
              <widget class="QPushButton" name="but_cnc_apply">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
               <property name="text">
                <string>Apply</string>
               </property>
@@ -787,6 +869,45 @@
           <string>Export</string>
          </attribute>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_11">
+            <item>
+             <widget class="QPushButton" name="but_export_xlsx_raw">
+              <property name="text">
+               <string>Export raw</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="but_export_xlsx_trimmed">
+              <property name="text">
+               <string>Export Trimmed</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="but_export_xlsx_filtered">
+              <property name="text">
+               <string>Export Filtered</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="but_export_xlsx_cnc">
+              <property name="text">
+               <string>Export CNC</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="but_export_xlsx_all">
+              <property name="text">
+               <string>Export All</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
           <item>
            <widget class="QPushButton" name="but_gCode">
             <property name="text">
