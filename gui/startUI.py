@@ -23,12 +23,16 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.trimmed = None
         self.filtered = None
         self.cnc_data = None
+        self.path = None
 
         # Init Data-Plot
         self.pw = self.plotwidget.canvas
         self.data_ax1 = self.pw.fig.add_subplot(111)
         self.data_ax2 = self.data_ax1.twinx()
         self.fline, = self.data_ax2.plot([], [])
+
+        self.psize_w = self.plotwidget.frameGeometry().width()
+        self.psize_h = self.plotwidget.frameGeometry().height()
 
         self.setup_trigger()
         self.check_data()
@@ -55,12 +59,10 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.para_filt_rol_n.valueChanged.connect(lambda: self.update_filter(False))
         self.txt_para_filt_rol_n.returnPressed.connect(lambda: self.update_filter(False))
         self.but_filt_apply.clicked.connect(lambda: self.update_filter(True))
-        self.but_export_xlsx_all.clicked.connect(lambda: self.export_xls('all'))
-        self.but_export_xlsx_raw.clicked.connect(lambda: self.export_xls('raw'))
-        self.but_export_xlsx_trimmed.clicked.connect(lambda: self.export_xls('trimmed'))
-        self.but_export_xlsx_filtered.clicked.connect(lambda: self.export_xls('filtered'))
-        self.but_export_xlsx_cnc.clicked.connect(lambda: self.export_xls('cnc'))
+        self.but_export_xlsx_all.clicked.connect(self.export_xls)
         self.but_gCode.clicked.connect(self.export_gcode)
+        self.but_delete_data.clicked.connect(self.clear_data)
+        self.actionOpen.triggered.connect(self.import_data)
 
     def export_gcode(self):
         if self.cnc_data is not None:
@@ -81,32 +83,18 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
         # kann man sich jetzt hier nochmal anzeigen lassen
         ld.save_gcode(fname, g_code)
 
-
-    def export_xls(self, data='raw'):
+    def export_xls(self):
         fname = self.save_file("Excel Files (*.xlsx)")
         if not fname:
             return
 
-        if data == 'raw':
-            exp_data = [self.df]
-            names = [data]
-        elif data == 'trimmed':
-            exp_data = [self.trimmed]
-            names = [data]
-        elif data == 'filtered':
-            exp_data = [self.filtered]
-            names = [data]
-        elif data == 'cnc':
-            exp_data = [self.cnc_data]
-            names = [data]
-        else:
-            names = []
-            exp_data = []
-            for e, n in zip([self.df, self.trimmed, self.filtered, self.cnc_data],
-                            ['raw', 'trimmed', 'filtered', 'cnc']):
-                if e is not None:
-                    exp_data.append(e)
-                    names.append(n)
+        names = []
+        exp_data = []
+        for e, n in zip([self.df, self.trimmed, self.filtered, self.cnc_data],
+                        ['raw', 'trimmed', 'filtered', 'cnc']):
+            if e is not None:
+                exp_data.append(e)
+                names.append(n)
 
         ld.export_data(fname, names, exp_data)
 
@@ -128,12 +116,6 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
         tab = self.tab_cnc_cont
         hf.dict_to_table(d=data, table=tab)
         tab.setHorizontalHeaderLabels(data.keys())
-
-        if 'sq' in data.keys():
-            # Text aus SQ-Spalte in Zahlen umwandeln
-            sq = [evaluate_pb_expression(s) for s in data['sq'] if s]
-            # den Maximalwert als SQ_0 setzen
-            self.para_cnc_i0.setText(str(max(sq)))
 
         self.but_cnc_apply.setEnabled(True)
 
@@ -164,6 +146,7 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
         try:
             data = ld.import_data(path)
             data['Zeit'] = ld.reset_timescale(data['Zeit'])
+            self.path = hf.basename(path)
             self.set_current_data(data)
         except ValueError as E:
             args = E.args
@@ -264,66 +247,6 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.trimmed = td
         self.filtered = None
         self.check_data()
-
-    def check_data(self):
-        ico_on = QtGui.QIcon(":/img/green.png")
-        ico_off = QtGui.QIcon(":/img/red.png")
-        tab = self.tabWidget
-
-        if self.df is not None:
-            if not hasattr(self.df, 'Sollwert'):
-                box.show_error_box('Keine Sollwertdaten vorhanden.\nDatei prüfen!')
-                return
-            #
-            # Hier müsste das Label für die Geladenen Daten eingefügt werden
-            #
-            self.but_export_xlsx_raw.setEnabled(True)
-            for idx in range(5):
-                tab.setTabEnabled(idx, True)
-
-            if self.trimmed is not None:
-                tab.setTabIcon(0, ico_on)
-                self.but_trim_undo.setEnabled(True)
-                self.but_export_xlsx_trimmed.setEnabled(True)
-            else:
-                tab.setTabIcon(0, ico_off)
-                self.but_trim_undo.setEnabled(False)
-                self.but_export_xlsx_trimmed.setEnabled(False)
-
-            if self.filtered is not None:
-                tab.setTabIcon(1, ico_on)
-                self.but_filt_undo.setEnabled(True)
-                self.but_export_xlsx_filtered.setEnabled(True)
-            else:
-                self.but_filt_undo.setEnabled(False)
-                tab.setTabIcon(1, ico_off)
-                self.but_export_xlsx_filtered.setEnabled(False)
-        else:
-            for idx in range(5):
-                tab.setTabEnabled(idx, False)
-                if idx not in [3, 4]:
-                    tab.setTabIcon(idx, ico_off)
-
-        if self.cnc_data is not None:
-            tab.setTabIcon(2, ico_on)
-            self.but_gCode.setEnabled(True)
-            self.but_clear_cnc.setEnabled(True)
-            self.but_export_xlsx_cnc.setEnabled(True)
-        else:
-            tab.setTabIcon(2, ico_off)
-            self.but_gCode.setEnabled(False)
-            self.but_clear_cnc.setEnabled(False)
-            self.but_export_xlsx_cnc.setEnabled(False)
-
-        if self.df is not None:
-            self.plot_data(cnc=self.cnc_data)
-            if self.filtered is not None:
-                self.plot_filter(self.filtered['Zeit'], self.filtered['P-Ausgabe'])
-        else:
-            self.data_ax1.clear()
-            self.data_ax2.clear()
-
-            self.but_export_xlsx_raw.setEnabled(False)
 
     def plot_data(self, ib=None, cnc=None, filt=None):
         self.data_ax1.clear()
@@ -545,8 +468,10 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
 
     def toggle_tab(self, i):
         tab = self.tabWidget
+        reset = False
         # Close
         if i == 5:
+            reset = True
             h = 25
         # Trimming
         elif i == 0:
@@ -557,15 +482,80 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
             h = 230
         # Export
         elif i == 3:
-            h = 180
+            h = 100
+        elif i == 4:
+            h = 300
         else:
             h = 16777215
 
         tab.setMaximumHeight(h)
-        self.resize(self.minimumSizeHint())
+        if reset:
+            self.pw.setMaximumHeight(self.psize_h)
+            self.resize(self.minimumSizeHint())
 
     def highlight_field(self, f):
         f.setStyleSheet('border: 2px solid red;')
 
     def reset_field(self, f):
         f.setStyleSheet('border: 1px solid black')
+
+    def set_current_filelabel(self, p):
+        if p:
+            text = f'Loaded file: {p}'
+        else:
+            text = 'no file loaded. Press STRG + O or click \"input\"'
+        self.lab_loaded_file.setText(text)
+
+    def check_data(self):
+        ico_on = QtGui.QIcon(":/img/green.png")
+        ico_off = QtGui.QIcon(":/img/red.png")
+        tab = self.tabWidget
+
+        if self.df is not None:
+            if not hasattr(self.df, 'Sollwert'):
+                box.show_error_box('Keine Sollwertdaten vorhanden.\nDatei prüfen!')
+                return
+            self.but_delete_data.setEnabled(True)
+            for idx in range(5):
+                tab.setTabEnabled(idx, True)
+
+            if self.trimmed is not None:
+                tab.setTabIcon(0, ico_on)
+                self.but_trim_undo.setEnabled(True)
+            else:
+                tab.setTabIcon(0, ico_off)
+                self.but_trim_undo.setEnabled(False)
+
+            if self.filtered is not None:
+                tab.setTabIcon(1, ico_on)
+                self.but_filt_undo.setEnabled(True)
+            else:
+                self.but_filt_undo.setEnabled(False)
+                tab.setTabIcon(1, ico_off)
+        else:
+            for idx in range(5):
+                tab.setTabEnabled(idx, False)
+                if idx not in [3, 4]:
+                    tab.setTabIcon(idx, ico_off)
+
+        if self.cnc_data is not None:
+            tab.setTabIcon(2, ico_on)
+            self.but_gCode.setEnabled(True)
+            self.but_clear_cnc.setEnabled(True)
+        else:
+            tab.setTabIcon(2, ico_off)
+            self.but_gCode.setEnabled(False)
+            self.but_clear_cnc.setEnabled(False)
+
+        if self.df is not None:
+            self.plot_data(cnc=self.cnc_data)
+            if self.filtered is not None:
+                self.plot_filter(self.filtered['Zeit'], self.filtered['P-Ausgabe'])
+        else:
+            self.path = None
+            self.data_ax1.clear()
+            self.data_ax2.clear()
+            self.pw.draw_idle()
+            self.but_delete_data.setEnabled(False)
+
+        self.set_current_filelabel(self.path)

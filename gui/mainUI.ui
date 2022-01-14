@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>520</width>
-    <height>716</height>
+    <height>440</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -29,20 +29,83 @@
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="1">
-       <widget class="QPushButton" name="but_status_import">
+      <item row="0" column="0">
+       <widget class="QPushButton" name="but_openFile">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>40</width>
+          <height>40</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>40</width>
+          <height>40</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Load CSV file</string>
+        </property>
         <property name="text">
-         <string>Status</string>
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="icons/icns.qrc">
+          <normaloff>:/img/import_csv.png</normaloff>:/img/import_csv.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
         </property>
        </widget>
       </item>
-      <item row="0" column="0">
-       <widget class="QPushButton" name="but_openFile">
+      <item row="0" column="1">
+       <widget class="QLabel" name="lab_loaded_file">
         <property name="text">
-         <string>OPEN</string>
+         <string>Loaded File</string>
         </property>
-        <property name="shortcut">
-         <string>Ctrl+O</string>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QPushButton" name="but_delete_data">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>40</width>
+          <height>40</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>40</width>
+          <height>40</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Clear all data</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="icons/icns.qrc">
+          <normaloff>:/img/delete.png</normaloff>:/img/delete.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>25</width>
+          <height>25</height>
+         </size>
         </property>
        </widget>
       </item>
@@ -86,14 +149,14 @@
         <property name="maximumSize">
          <size>
           <width>16777215</width>
-          <height>180</height>
+          <height>25</height>
          </size>
         </property>
         <property name="tabPosition">
          <enum>QTabWidget::North</enum>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>5</number>
         </property>
         <property name="iconSize">
          <size>
@@ -109,6 +172,9 @@
          </attribute>
          <attribute name="title">
           <string>Trimming</string>
+         </attribute>
+         <attribute name="toolTip">
+          <string>Select, which Data should be included into calculation</string>
          </attribute>
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
@@ -149,6 +215,9 @@
                 <height>16777215</height>
                </size>
               </property>
+              <property name="toolTip">
+               <string>Threshold to which the data will bei trimmed.</string>
+              </property>
               <property name="inputMask">
                <string>d000</string>
               </property>
@@ -178,6 +247,9 @@
                 <height>16777215</height>
                </size>
               </property>
+              <property name="toolTip">
+               <string>Determine, how many Datapoints at the start will be discarded (can be used repeatedly)</string>
+              </property>
              </widget>
             </item>
             <item row="3" column="0">
@@ -200,6 +272,9 @@
                 <width>100</width>
                 <height>16777215</height>
                </size>
+              </property>
+              <property name="toolTip">
+               <string>Determine, how many Datapoints at the end will be discarded (can be used repeatedly)</string>
               </property>
              </widget>
             </item>
@@ -225,8 +300,27 @@
             </property>
             <item>
              <widget class="QPushButton" name="but_trim_apply">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="toolTip">
+               <string>Apply Trimming</string>
+              </property>
               <property name="text">
-               <string>Apply</string>
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="icons/icns.qrc">
+                <normaloff>:/img/accept.png</normaloff>:/img/accept.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
               </property>
              </widget>
             </item>
@@ -235,8 +329,15 @@
               <property name="enabled">
                <bool>false</bool>
               </property>
+              <property name="toolTip">
+               <string>Revert</string>
+              </property>
               <property name="text">
-               <string>Undo</string>
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="icons/icns.qrc">
+                <normaloff>:/img/revert.png</normaloff>:/img/revert.png</iconset>
               </property>
              </widget>
             </item>
@@ -265,6 +366,9 @@
          <attribute name="title">
           <string>Filter</string>
          </attribute>
+         <attribute name="toolTip">
+          <string>Smooth data</string>
+         </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_7">
           <item>
            <widget class="QToolBox" name="tb_filt">
@@ -275,14 +379,14 @@
              </size>
             </property>
             <property name="currentIndex">
-             <number>0</number>
+             <number>2</number>
             </property>
             <widget class="QWidget" name="page">
              <property name="geometry">
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>459</width>
+               <width>308</width>
                <height>70</height>
               </rect>
              </property>
@@ -301,6 +405,9 @@
                 </item>
                 <item>
                  <widget class="QSlider" name="para_filt_sav_n">
+                  <property name="toolTip">
+                   <string>The length of the filter window (i.e., the number of coefficients). window_length must be a positive odd integer. If mode is ‘interp’, window_length must be less than or equal to the size of x.</string>
+                  </property>
                   <property name="minimum">
                    <number>3</number>
                   </property>
@@ -354,7 +461,11 @@
                  </widget>
                 </item>
                 <item row="1" column="3">
-                 <widget class="QSpinBox" name="para_filt_sav_deriv"/>
+                 <widget class="QSpinBox" name="para_filt_sav_deriv">
+                  <property name="toolTip">
+                   <string>The order of the derivative to compute. This must be a nonnegative integer. The default is 0, which means to filter the data without differentiating.</string>
+                  </property>
+                 </widget>
                 </item>
                 <item row="1" column="4" alignment="Qt::AlignRight">
                  <widget class="QLabel" name="label_7">
@@ -379,6 +490,9 @@
                 </item>
                 <item row="1" column="1">
                  <widget class="QSpinBox" name="para_filt_sav_poly">
+                  <property name="toolTip">
+                   <string>The order of the polynomial used to fit the samples. polyorder must be less than window_length.</string>
+                  </property>
                   <property name="value">
                    <number>1</number>
                   </property>
@@ -386,6 +500,9 @@
                 </item>
                 <item row="1" column="5">
                  <widget class="QDoubleSpinBox" name="para_filt_sav_delta">
+                  <property name="toolTip">
+                   <string>The spacing of the samples to which the filter will be applied. This is only used if deriv &gt; 0. Default is 1.0.</string>
+                  </property>
                   <property name="minimum">
                    <double>1.000000000000000</double>
                   </property>
@@ -393,6 +510,9 @@
                 </item>
                 <item row="1" column="7">
                  <widget class="QComboBox" name="para_filt_sav_mode">
+                  <property name="toolTip">
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Open Sans','sans-serif'; font-size:15px; color:#333333; background-color:#ffffff;&quot;&gt;This determines the type of extension to use for the padded signal to which the filter is applied.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  </property>
                   <item>
                    <property name="text">
                     <string>nearest</string>
@@ -424,8 +544,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>476</width>
-               <height>119</height>
+               <width>107</width>
+               <height>42</height>
               </rect>
              </property>
              <attribute name="label">
@@ -443,6 +563,9 @@
                 </item>
                 <item>
                  <widget class="QSlider" name="para_filt_med_n">
+                  <property name="toolTip">
+                   <string>A scalar or an N-length list giving the size of the median filter window in each dimension. Elements of kernel_size should be odd. If kernel_size is a scalar, then this scalar is used as the size in each dimension. Default size is 3 for each dimension.</string>
+                  </property>
                   <property name="minimum">
                    <number>3</number>
                   </property>
@@ -472,6 +595,14 @@
              </layout>
             </widget>
             <widget class="QWidget" name="page_3">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>459</width>
+               <height>42</height>
+              </rect>
+             </property>
              <attribute name="label">
               <string>Rolling Average</string>
              </attribute>
@@ -487,6 +618,9 @@
                 </item>
                 <item>
                  <widget class="QSlider" name="para_filt_rol_n">
+                  <property name="toolTip">
+                   <string>Size of the moving window. This is the number of observations used for calculating the statistic. Each window will be a fixed size.</string>
+                  </property>
                   <property name="minimum">
                    <number>3</number>
                   </property>
@@ -527,8 +661,24 @@
             </property>
             <item>
              <widget class="QPushButton" name="but_filt_undo">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="toolTip">
+               <string>Undo change</string>
+              </property>
               <property name="text">
-               <string>Undo</string>
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="icons/icns.qrc">
+                <normaloff>:/img/revert.png</normaloff>:/img/revert.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
               </property>
              </widget>
             </item>
@@ -536,6 +686,9 @@
              <spacer name="horizontalSpacer_4">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Expanding</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
@@ -547,8 +700,21 @@
             </item>
             <item>
              <widget class="QPushButton" name="but_filt_apply">
+              <property name="toolTip">
+               <string>Accept</string>
+              </property>
               <property name="text">
-               <string>Apply</string>
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="icons/icns.qrc">
+                <normaloff>:/img/accept.png</normaloff>:/img/accept.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
               </property>
              </widget>
             </item>
@@ -564,6 +730,9 @@
          <attribute name="title">
           <string>CNC</string>
          </attribute>
+         <attribute name="toolTip">
+          <string>Convert Gcode from File to Parameters</string>
+         </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -574,12 +743,62 @@
              <number>0</number>
             </property>
             <item>
+             <widget class="QPushButton" name="but_import_gcode">
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="icons/icns.qrc">
+                <normaloff>:/img/import_mpf.png</normaloff>:/img/import_mpf.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>30</width>
+                <height>30</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="but_import_par">
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="icons/icns.qrc">
+                <normaloff>:/img/import_par.png</normaloff>:/img/import_par.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>30</width>
+                <height>30</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_5">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
              <widget class="ToggleSwitch" name="cb_cnc_np">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
+              </property>
+              <property name="toolTip">
+               <string>Select the data suitable for teh part to be created</string>
               </property>
               <property name="text">
                <string>CheckBox</string>
@@ -616,6 +835,9 @@
                   <width>30</width>
                   <height>16777215</height>
                  </size>
+                </property>
+                <property name="toolTip">
+                 <string>Which Axis is used to lead the process</string>
                 </property>
                 <item>
                  <property name="text">
@@ -657,6 +879,9 @@
               </item>
               <item row="0" column="1">
                <widget class="QDoubleSpinBox" name="sb_cnc_ang">
+                <property name="toolTip">
+                 <string>Increment in °, to which the cnc data will bei created</string>
+                </property>
                 <property name="suffix">
                  <string/>
                 </property>
@@ -674,31 +899,46 @@
              </layout>
             </item>
             <item>
-             <spacer name="horizontalSpacer_5">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
+             <layout class="QFormLayout" name="formLayout_5">
+              <property name="fieldGrowthPolicy">
+               <enum>QFormLayout::FieldsStayAtSizeHint</enum>
               </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
+              <property name="formAlignment">
+               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
               </property>
-             </spacer>
-            </item>
-            <item>
-             <widget class="QPushButton" name="but_import_gcode">
-              <property name="text">
-               <string>Open G-Code</string>
+              <property name="leftMargin">
+               <number>0</number>
               </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="but_import_par">
-              <property name="text">
-               <string>Open PYR_PAR</string>
+              <property name="rightMargin">
+               <number>0</number>
               </property>
-             </widget>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_11">
+                <property name="text">
+                 <string>dIS</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLineEdit" name="para_cnc_di">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>30</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="toolTip">
+                 <string>Maximum beam offset. Can be read from PAR-files</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
            </layout>
           </item>
@@ -753,72 +993,91 @@
              </widget>
             </item>
             <item>
-             <widget class="QGroupBox" name="groupBox">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
+             <layout class="QVBoxLayout" name="verticalLayout_8">
+              <property name="leftMargin">
+               <number>0</number>
               </property>
-              <property name="title">
-               <string>Control</string>
-              </property>
-              <layout class="QVBoxLayout" name="verticalLayout_8">
-               <property name="spacing">
-                <number>0</number>
-               </property>
-               <property name="leftMargin">
-                <number>2</number>
-               </property>
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="rightMargin">
-                <number>2</number>
-               </property>
-               <property name="bottomMargin">
-                <number>2</number>
-               </property>
-               <item>
-                <layout class="QFormLayout" name="formLayout_2">
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="label_10">
-                   <property name="text">
-                    <string>I0</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="1">
-                  <widget class="QLineEdit" name="para_cnc_i0">
-                   <property name="maximumSize">
-                    <size>
-                     <width>30</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QLabel" name="label_11">
-                   <property name="text">
-                    <string>dIS</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="1">
-                  <widget class="QLineEdit" name="para_cnc_di">
-                   <property name="maximumSize">
-                    <size>
-                     <width>30</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-              </layout>
-             </widget>
+              <item>
+               <widget class="QPushButton" name="but_tab_row_add">
+                <property name="toolTip">
+                 <string>Add row</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="icons/icns.qrc">
+                  <normaloff>:/img/add.png</normaloff>:/img/add.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="but_tab_row_up">
+                <property name="toolTip">
+                 <string>Move selected row up</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="icons/icns.qrc">
+                  <normaloff>:/img/up.png</normaloff>:/img/up.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="but_tab_row_dwn">
+                <property name="toolTip">
+                 <string>Move selected row down</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="icons/icns.qrc">
+                  <normaloff>:/img/down.png</normaloff>:/img/down.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="but_tab_row_del">
+                <property name="toolTip">
+                 <string>Delete selected row</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="icons/icns.qrc">
+                  <normaloff>:/img/substract.png</normaloff>:/img/substract.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
            </layout>
           </item>
@@ -832,8 +1091,21 @@
               <property name="enabled">
                <bool>false</bool>
               </property>
+              <property name="toolTip">
+               <string>Clear Data</string>
+              </property>
               <property name="text">
-               <string>Clear CNC</string>
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="icons/icns.qrc">
+                <normaloff>:/img/revert.png</normaloff>:/img/revert.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
               </property>
              </widget>
             </item>
@@ -855,8 +1127,21 @@
               <property name="enabled">
                <bool>false</bool>
               </property>
+              <property name="toolTip">
+               <string>Create CNC-Data</string>
+              </property>
               <property name="text">
-               <string>Apply</string>
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="icons/icns.qrc">
+                <normaloff>:/img/accept.png</normaloff>:/img/accept.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
               </property>
              </widget>
             </item>
@@ -868,50 +1153,59 @@
          <attribute name="title">
           <string>Export</string>
          </attribute>
+         <attribute name="toolTip">
+          <string>Export data</string>
+         </attribute>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
-           <layout class="QVBoxLayout" name="verticalLayout_11">
-            <item>
-             <widget class="QPushButton" name="but_export_xlsx_raw">
-              <property name="text">
-               <string>Export raw</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="but_export_xlsx_trimmed">
-              <property name="text">
-               <string>Export Trimmed</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="but_export_xlsx_filtered">
-              <property name="text">
-               <string>Export Filtered</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="but_export_xlsx_cnc">
-              <property name="text">
-               <string>Export CNC</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="but_export_xlsx_all">
-              <property name="text">
-               <string>Export All</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           <widget class="QPushButton" name="but_export_xlsx_all">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>Save current data as XLSX file</string>
+            </property>
+            <property name="text">
+             <string>Save as XLSX</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons/icns.qrc">
+              <normaloff>:/img/export_xls.png</normaloff>:/img/export_xls.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>40</width>
+              <height>40</height>
+             </size>
+            </property>
+           </widget>
           </item>
           <item>
            <widget class="QPushButton" name="but_gCode">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>Conbines power data with cnc parameters and exports Gcode</string>
+            </property>
             <property name="text">
-             <string>MAKE G-Code</string>
+             <string>Convert to Gcode</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons/icns.qrc">
+              <normaloff>:/img/export_cnc.png</normaloff>:/img/export_cnc.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>40</width>
+              <height>40</height>
+             </size>
             </property>
             <property name="shortcut">
              <string>Ctrl+Return</string>
@@ -929,6 +1223,9 @@
          <attribute name="title">
           <string>Close</string>
          </attribute>
+         <attribute name="toolTip">
+          <string>Close tabs</string>
+         </attribute>
         </widget>
        </widget>
       </item>
@@ -945,8 +1242,31 @@
      <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionOpen"/>
+   </widget>
+   <addaction name="menuFile"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionClose">
+   <property name="text">
+    <string>Close</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

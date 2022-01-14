@@ -2,6 +2,7 @@ import pandas as pd
 from math import ceil
 from PyQt5.QtWidgets import QTableWidgetItem as QTI
 from PyQt5.QtWidgets import QTableWidget
+from os.path import basename
 
 
 def dict_to_dataframe(d: dict):
@@ -41,6 +42,10 @@ def table_to_dict(table: QTableWidget):
         for m in range(tab.rowCount()):
             d[k][m] = tab.item(m, n).text()
     return d
+
+
+def get_filename(p: str):
+    return basename(p)
 
 
 def flatten(t):
