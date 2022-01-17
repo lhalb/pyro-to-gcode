@@ -44,6 +44,13 @@ def table_to_dict(table: QTableWidget):
     return d
 
 
+def insert_column(table: QTableWidget, txt):
+    item = QTI(txt)
+    last_col = table.columnCount()
+    table.insertColumn(last_col)
+    table.setHorizontalHeaderItem(last_col, item)
+
+
 def get_filename(p: str):
     return basename(p)
 

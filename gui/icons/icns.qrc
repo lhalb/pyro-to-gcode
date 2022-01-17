@@ -6,10 +6,16 @@
   <qresource prefix="img">
     <file>export_xls.png</file>
     <file>accept.png</file>
+    <file>add_col.png</file>
+    <file>add_row.png</file>
+    <file>left.png</file>
+    <file>right.png</file>
+    <file>del_col.png</file>
+    <file>del_row.png</file>
     <file>revert.png</file>
     <file>delete.png</file>
-    <file>export_cnc.png</file>
     <file>import_csv.png</file>
+    <file>export_cnc.png</file>
     <file>import_mpf.png</file>
     <file>add.png</file>
     <file>down.png</file>

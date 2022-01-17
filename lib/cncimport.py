@@ -252,6 +252,11 @@ def replace_missing_values(input_dict, replace_dict):
     return outdict
 
 
+def get_available_axis(axlist):
+    all_ax = ['g', 'a', 'b', 'x', 'y', 'z', 'sox', 'soy', 'su', 'sv', 'sq', 'sl', 'fms']
+    return [a for a in all_ax if a not in axlist]
+
+
 def parse_settings(c_list):
     reg_calcs = r'\(.*?\)'
     reg_vars = r'\b_.*?\b'

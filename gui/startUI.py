@@ -4,12 +4,12 @@ import gui.boxes as box
 
 from lib import libdata as ld
 from lib import libhelperfunctions as hf
-from lib.cncimport import import_cnc, get_value, clear_code, evaluate_pb_expression, gcode_to_values, detect_offset
+from lib.cncimport import import_cnc, get_value, clear_code, gcode_to_values, detect_offset, get_available_axis
 from lib import errors as err
 from gui.errordialog import ErrorDialogue as Ed
 from gui.cncimporting import CncImportDialogue as Cd
+from gui.axisPicker import AxisPicker as aP
 
-import pandas as pd
 
 class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
     def __init__(self):
@@ -33,6 +33,9 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
 
         self.psize_w = self.plotwidget.frameGeometry().width()
         self.psize_h = self.plotwidget.frameGeometry().height()
+
+        self.move_up = QtWidgets.QAction("Move_Up", self)
+        self.move_down = QtWidgets.QAction("Move_Down", self)
 
         self.setup_trigger()
         self.check_data()
@@ -64,6 +67,16 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.but_delete_data.clicked.connect(self.clear_data)
         self.actionOpen.triggered.connect(self.import_data)
 
+        # Tabelle
+        self.but_tab_row_add.clicked.connect(self.add_row)
+        self.but_tab_row_del.clicked.connect(self.delete_row)
+        self.but_tab_col_add.clicked.connect(self.add_col)
+        self.but_tab_col_del.clicked.connect(self.delete_col)
+        self.but_tab_row_up.clicked.connect(lambda: self.move_items('UP'))
+        self.but_tab_row_dwn.clicked.connect(lambda: self.move_items('DOWN'))
+        self.but_tab_col_left.clicked.connect(lambda: self.move_items('LEFT'))
+        self.but_tab_col_right.clicked.connect(lambda: self.move_items('RIGHT'))
+
     def export_gcode(self):
         if self.cnc_data is not None:
             dat = self.cnc_data
@@ -80,8 +93,11 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
 
         g_code = ld.export_data_to_gcode(dat, lead_ax)
 
-        # kann man sich jetzt hier nochmal anzeigen lassen
+        #
+        # den Gcode kann man sich jetzt hier nochmal anzeigen lassen
+        #
         ld.save_gcode(fname, g_code)
+        box.show_info_box(f'Daten erfolgreich unter\n{fname}\nexportiert.')
 
     def export_xls(self):
         fname = self.save_file("Excel Files (*.xlsx)")
@@ -97,6 +113,8 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
                 names.append(n)
 
         ld.export_data(fname, names, exp_data)
+
+        box.show_info_box(f'Daten erfolgreich unter\n{fname}\nexportiert.')
 
     def open_cnc_import(self):
         path = self.open_file(files='MPF(*.MPF)')
@@ -158,14 +176,12 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.check_data()
 
     def make_cnc_data_from_parameters(self):
-        testfields = [self.para_cnc_di, self.para_cnc_i0]
-        for f in testfields:
-            if f.text() == '':
-                box.show_error_box('Fehlender Parameter')
-                self.highlight_field(f)
-                return
-            else:
-                self.reset_field(f)
+        if self.para_cnc_di.text() == '':
+            box.show_error_box('Fehlender Parameter')
+            self.highlight_field(self.para_cnc_di)
+            return
+        else:
+            self.reset_field(self.para_cnc_di)
 
         corrected_values = hf.table_to_dict(self.tab_cnc_cont)
         increment = float(self.sb_cnc_ang.text().replace(',', '.'))
@@ -276,7 +292,7 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
             ax2.plot(x, ib, 'c-', label=ib.name, alpha=0.5)
 
         if cnc is not None:
-            ax2.plot(cnc['Zeit'], cnc['P-Ausgabe'], 'g-', label='SQ-CNC')
+            ax2.plot(cnc['Zeit'], cnc['P-Ausgabe'], 'm-', label='SQ-CNC')
 
         self.fline, = self.data_ax2.plot([], [], 'g-', label='Gefiltert')
 
@@ -465,6 +481,77 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
             return False
         else:
             return path
+
+    def add_row(self):
+        tab = self.tab_cnc_cont
+        rows = tab.rowCount()
+        tab.insertRow(rows)
+
+    def delete_row(self):
+        tab = self.tab_cnc_cont
+        curr_row = tab.currentRow()
+        tab.removeRow(curr_row)
+
+    def move_items(self, direction='UP'):
+        if direction not in ('UP', 'DOWN', 'LEFT', 'RIGHT'):
+            return
+
+        tab = self.tab_cnc_cont
+        row = tab.currentRow()
+        col = tab.currentColumn()
+
+        if direction in ('UP', 'DOWN'):
+            if direction == 'UP':
+                before = -1
+                after = 1
+                test = row > 0
+            else:
+                before = 2
+                after = 0
+                test = row < tab.rowCount()-1
+            if not test:
+                return
+            tab.insertRow(row + before)
+            for i in range(tab.columnCount()):
+                tab.setItem(row + before, i, tab.takeItem(row + after, i))
+                tab.setCurrentCell(row + before, col)
+            tab.removeRow(row + after)
+
+        if direction in ('LEFT', 'RIGHT'):
+            if direction == 'LEFT':
+                before = -1
+                after = 1
+                test = col > 0
+            else:
+                before = 2
+                after = 0
+                test = col < tab.columnCount() - 1
+            if not test:
+                return
+            tab.insertColumn(col + before)
+            for i in range(tab.rowCount()):
+                tab.setItem(i, col + before, tab.takeItem(i, col + after))
+                tab.setCurrentCell(row, col + before)
+            tab.removeColumn(col + after)
+
+    def add_col(self):
+        tab = self.tab_cnc_cont
+        curr_ax = [tab.horizontalHeaderItem(i).text() for i in range(tab.columnCount())]
+        avail_ax = get_available_axis(curr_ax)
+        if not avail_ax:
+            return
+        axpick = aP(avail_ax)
+        ret = axpick.exec_()
+        if not ret:
+            return
+
+        new_ax = axpick.cb_axis.currentText()
+        hf.insert_column(tab, new_ax)
+
+    def delete_col(self):
+        tab = self.tab_cnc_cont
+        curr_col = tab.currentColumn()
+        tab.removeColumn(curr_col)
 
     def toggle_tab(self, i):
         tab = self.tabWidget

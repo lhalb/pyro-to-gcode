@@ -156,7 +156,7 @@
          <enum>QTabWidget::North</enum>
         </property>
         <property name="currentIndex">
-         <number>5</number>
+         <number>2</number>
         </property>
         <property name="iconSize">
          <size>
@@ -379,15 +379,15 @@
              </size>
             </property>
             <property name="currentIndex">
-             <number>2</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="page">
              <property name="geometry">
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>308</width>
-               <height>70</height>
+               <width>476</width>
+               <height>119</height>
               </rect>
              </property>
              <attribute name="label">
@@ -599,7 +599,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>459</width>
+               <width>107</width>
                <height>42</height>
               </rect>
              </property>
@@ -846,6 +846,11 @@
                 </item>
                 <item>
                  <property name="text">
+                  <string>G4</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
                   <string>X</string>
                  </property>
                 </item>
@@ -984,7 +989,7 @@
                  </attribute>
                  <column>
                   <property name="text">
-                   <string>test</string>
+                   <string>a</string>
                   </property>
                  </column>
                 </widget>
@@ -998,84 +1003,174 @@
                <number>0</number>
               </property>
               <item>
-               <widget class="QPushButton" name="but_tab_row_add">
-                <property name="toolTip">
-                 <string>Add row</string>
+               <layout class="QGridLayout" name="gridLayout_2">
+                <property name="leftMargin">
+                 <number>0</number>
                 </property>
-                <property name="text">
-                 <string/>
+                <property name="topMargin">
+                 <number>0</number>
                 </property>
-                <property name="icon">
-                 <iconset resource="icons/icns.qrc">
-                  <normaloff>:/img/add.png</normaloff>:/img/add.png</iconset>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>20</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="but_tab_row_up">
-                <property name="toolTip">
-                 <string>Move selected row up</string>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="icon">
-                 <iconset resource="icons/icns.qrc">
-                  <normaloff>:/img/up.png</normaloff>:/img/up.png</iconset>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>20</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="but_tab_row_dwn">
-                <property name="toolTip">
-                 <string>Move selected row down</string>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="icon">
-                 <iconset resource="icons/icns.qrc">
-                  <normaloff>:/img/down.png</normaloff>:/img/down.png</iconset>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>20</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="but_tab_row_del">
-                <property name="toolTip">
-                 <string>Delete selected row</string>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="icon">
-                 <iconset resource="icons/icns.qrc">
-                  <normaloff>:/img/substract.png</normaloff>:/img/substract.png</iconset>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>20</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </widget>
+                <item row="1" column="1">
+                 <widget class="QPushButton" name="but_tab_row_dwn">
+                  <property name="toolTip">
+                   <string>Move selected row down</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="icons/icns.qrc">
+                    <normaloff>:/img/down.png</normaloff>:/img/down.png</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>20</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QPushButton" name="but_tab_row_add">
+                  <property name="toolTip">
+                   <string>Add row</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="icons/icns.qrc">
+                    <normaloff>:/img/add_row.png</normaloff>:/img/add_row.png</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>20</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <widget class="QPushButton" name="but_tab_col_del">
+                  <property name="toolTip">
+                   <string>Delete selected row</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="icons/icns.qrc">
+                    <normaloff>:/img/del_col.png</normaloff>:/img/del_col.png</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>20</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QPushButton" name="but_tab_row_del">
+                  <property name="toolTip">
+                   <string>Delete selected row</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="icons/icns.qrc">
+                    <normaloff>:/img/del_row.png</normaloff>:/img/del_row.png</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>20</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QPushButton" name="but_tab_col_add">
+                  <property name="toolTip">
+                   <string>Add row</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="icons/icns.qrc">
+                    <normaloff>:/img/add_col.png</normaloff>:/img/add_col.png</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>20</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="0">
+                 <widget class="QPushButton" name="but_tab_col_left">
+                  <property name="toolTip">
+                   <string>Move selected row down</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="icons/icns.qrc">
+                    <normaloff>:/img/left.png</normaloff>:/img/left.png</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>20</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QPushButton" name="but_tab_row_up">
+                  <property name="toolTip">
+                   <string>Move selected row up</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="icons/icns.qrc">
+                    <normaloff>:/img/up.png</normaloff>:/img/up.png</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>20</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="1">
+                 <widget class="QPushButton" name="but_tab_col_right">
+                  <property name="toolTip">
+                   <string>Move selected row up</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="icons/icns.qrc">
+                    <normaloff>:/img/right.png</normaloff>:/img/right.png</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>20</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </item>
              </layout>
             </item>
