@@ -1,4 +1,4 @@
-from PyQt5 import QtGui, QtWidgets
+from PyQt5 import QtGui, QtWidgets, QtCore
 import gui.mainUI as mUI
 import gui.boxes as box
 
@@ -15,6 +15,12 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
     def __init__(self):
         super(self.__class__, self).__init__()
         self.setupUi(self)
+
+        # # Setze icon
+        root = QtCore.QFileInfo(__file__).absolutePath()
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(root + "/icons/icon.png"), QtGui.QIcon.Selected, QtGui.QIcon.On)
+        self.setWindowIcon(icon)
 
         # aenderungen an der GUI
         self.tabWidget.setMaximumHeight(25)
