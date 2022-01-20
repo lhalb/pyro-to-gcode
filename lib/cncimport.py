@@ -134,7 +134,7 @@ def get_unknown_vars(c_list):
 
 def evaluate_pb_expression(s):
     pat = r'([IiAa][Cc]\(|\))'
-    return eval(re.sub(pat, '', s))
+    return eval(re.sub(pat, '', str(s)))
 
 
 def gcode_to_values(code_dict, lead_axis='a', g_start='g91', inc=5.0, offset=True, force_fill=False):
@@ -143,7 +143,7 @@ def gcode_to_values(code_dict, lead_axis='a', g_start='g91', inc=5.0, offset=Tru
             return 0
         calc_val = evaluate_pb_expression(val)
         # Wenn Absolutwerte angenommen werden sollen
-        if (')' in val and '(' not in val) or re.search(r'[AaCc]\(', val) or (gs == 'g90'):
+        if (')' in val) and ('(' not in val) or re.search(r'[AaCc]\(', val) or (gs == 'g90'):
             dist = calc_val - start
         elif gs == 'g91' or re.search(r'[IiCc]\(', val):
             dist = calc_val
@@ -181,7 +181,6 @@ def gcode_to_values(code_dict, lead_axis='a', g_start='g91', inc=5.0, offset=Tru
             if offset:
                 #  setze den Offsetwert als Startwert
                 lead_start = hf.maybeMakeNumber(cd[lead_axis][i])
-                continue
 
         lead_dist = get_distance(lead_start, g_act, cd[lead_axis][i])
         steps.append(abs(int(lead_dist/inc)))
@@ -193,42 +192,54 @@ def gcode_to_values(code_dict, lead_axis='a', g_start='g91', inc=5.0, offset=Tru
             raise err.ValueTooLargeError(f'Increment {inc} is too coarse.')
         elif 1 <= s < 3 and not force_fill:
             raise err.ValueNearlyTooLargeError(f'Increment {inc} could be too coarse.')
-        elif s > 1000 and not force_fill:
+        elif s > 3000 and not force_fill:
             raise err.ValueTooSmallError(f'Increment {inc} could be too small.')
+
+    # -1 da G herausgelassen wird
+    offset_reached = [not offset] * (len(cd.keys()) - 1)
 
     j = 0
     for i in range(len(cd[lead_axis])):
         s = steps[j]
-        if not cd[lead_axis][i]:
+        if not s:
+            j += 1
             continue
-        for k in (k for k in cd.keys() if k != 'g'):
-            v = cd[k][i]
-            if not s and v:
-                starts[k] = hf.maybeMakeNumber(v)
-            elif not s and not v:
-                continue
-            else:
-                if i == len(cd[lead_axis]) - 1:
-                    end_switch = True
-                    add = 1
-                else:
-                    end_switch = False
-                    add = 0
 
-                start_val = starts[k]
-                if k == 'fms' or k == 'f':
-                    if not v:
-                        stop_val = start_val
-                    else:
-                        stop_val = eval(v)
-                    vals = np.repeat(stop_val, s+add)
+        for it, k in enumerate(k for k in cd.keys() if k != 'g'):
+            v = cd[k][i]
+
+            if i == len(cd[lead_axis]) - 1:
+                add = 1
+            else:
+                add = 0
+
+            start_val = evaluate_pb_expression(starts[k])
+            if not all(offset_reached):
+                if not v:
+                    vals = [start_val]
                 else:
-                    g = cd['g'][i]
-                    stop_val = start_val + get_distance(start_val, g, v)
-                    vals = np.linspace(start_val, stop_val, num=s+add, endpoint=end_switch)
-                if v:
+                    vals = [evaluate_pb_expression(v)]
+                    starts[k] = vals[0]
+                offset_reached[it] = True
+            else:
+                if not v:
+                    vals = np.repeat(start_val, s)
+                else:
+                    if k == 'fms' or k == 'f':
+                        if not v:
+                            stop_val = start_val
+                        else:
+                            stop_val = eval(v)
+
+                        vals = np.repeat(stop_val, s)
+                    else:
+                        g = cd['g'][i]
+                        stop_val = start_val + get_distance(start_val, g, v)
+                        vals = np.linspace(start_val, stop_val, num=s+1, endpoint=True)[1:]
+
                     starts[k] = stop_val
-                data[k].append(vals)
+
+            data[k].append(vals)
         j += 1
 
     for k in data.keys():
@@ -351,10 +362,10 @@ def detect_offset(pars: dict, ax: str):
 
 
 if __name__ == "__main__":
-    filename = "../data/EBH_347_BS.MPF"
-    nst = 'NP-1'
+    filename = "../data/EBH_123.MPF"
+    nst = 'NP-2'
     leading_axis = 'a'
-    increment = 0.25
+    increment = 0.2
     force_calc = False
 
     # importiere die Datei
@@ -385,7 +396,7 @@ if __name__ == "__main__":
     else:
         lead_offset = False
 
-    values = get_values_from_parameters(cnc, unknown_vars, p_start=strt, p_end=strt + c_strt, mode=par_mode)
+    values = get_values_from_parameters(cnc, unknown_vars, p_start=strt, p_end=strt + c_strt, mode=par_mode, n_p=nst)
 
     corrected_values = replace_missing_values(contour_parameters, values)
 
@@ -415,6 +426,6 @@ if __name__ == "__main__":
                 else:
                     print('Unsupported Answer.')
 
-    print_data(gcode)
-
+    print('finished')
+    # print_data(gcode)
 

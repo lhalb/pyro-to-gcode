@@ -127,25 +127,17 @@ class CncImportDialogue(cUI.Ui_Dialog, QtWidgets.QDialog):
         contour_parameters = self.raw_parameters
         strt = self.strt
         c_strt = self.c_strt
-        leading_axis = self.la
+        n_p = self.np
 
         par_cnc = code[strt:strt + c_strt]
         par_mode = cnc.get_parameter_mode(par_cnc)
 
         unknown_vars = cnc.get_unknown_vars(contour_parameters.values())
 
-        values = cnc.get_values_from_parameters(code, unknown_vars, p_start=strt, p_end=strt + c_strt, mode=par_mode)
+        values = cnc.get_values_from_parameters(code, unknown_vars,
+                                                p_start=strt, p_end=strt + c_strt, mode=par_mode, n_p=n_p)
 
         corrected_values = cnc.replace_missing_values(contour_parameters, values)
 
         hf.dict_to_table(corrected_values, self.tab_para)
 
-    # def ok_clicked(self):
-    #     ed = ED(0.25, 'Hat geklappt', critical=False)
-    #     ed.exec_()
-    #     response = ed.retval
-    #
-    #
-    # def close_clicked(self):
-    #     ed = ED(0.1, 'Kritischer Fehler', critical=True)
-    #     ed.exec_()

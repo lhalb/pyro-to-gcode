@@ -120,7 +120,7 @@ def plot_data(d, ib=None, cnc=None, filt=None):
     plt.show()
 
 
-def export_data_to_gcode(data: pd.DataFrame, la: str):
+def export_data_to_gcode(data: pd.DataFrame, la: str, ignore=['soy']):
     def make_string(lax, laxv, keys, vals, prec=6):
         start = f'{lax.upper()}={round(laxv, prec)}'
         mi = []
@@ -129,23 +129,32 @@ def export_data_to_gcode(data: pd.DataFrame, la: str):
             if k == 'fms':
                 end = f'Fms {hf.maybeMakeNumber(v)}'
             elif k in ['sq', 'sl']:
-                mi.append(f'{k.upper()} ({round(v, 2)}+_{k.upper()}_OFF))')
+                if k == 'sq':
+                    tresh = 15
+                else:
+                    tresh= 300
+                if v < tresh:
+                    mi.append(f'{k.upper()} {round(v, 2)})')
+                else:
+                    mi.append(f'{k.upper()} ({round(v, 2)}+_{k.upper()}_OFF))')
             else:
                 mi.append(f'{k.upper()}={round(v, prec)}')
         middle = ' '.join(mi)
         return ' '.join([start, middle, end])
     # Header schreiben
-    header = 'CONTOUR:\nG1 G91 G64'
+    header = 'G1 G91 G64'
     # Führungsachse inkrementell schreiben
     incremental_lead = np.ediff1d(data[la.lower()], to_begin=data[la.lower()].iloc[0])
     # Führungsachse aus den restlichen Daten entfernen
     data.drop(la.lower(), axis=1, inplace=True)
+    for ig in ignore:
+        data.drop(ig, axis=1, inplace=True)
 
     body_strings = [make_string(la, incremental_lead[i], data.keys(), data.iloc[i]) for i in range(len(data.index))]
 
     body = '\n'.join(body_strings)
 
-    footer = '\nRET'
+    footer = '\nM30'
 
     return '\n'.join([header, body, footer])
 

@@ -35,6 +35,8 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.pw = self.plotwidget.canvas
         self.data_ax1 = self.pw.fig.add_subplot(111)
         self.data_ax2 = self.data_ax1.twinx()
+        self.data_ax1.clear()
+        self.data_ax2.clear()
         self.fline, = self.data_ax2.plot([], [])
 
         self.psize_w = self.plotwidget.frameGeometry().width()
@@ -315,6 +317,8 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.trimmed = None
         self.cnc_data = None
         self.filtered = None
+        empty_table = {'a': ''}
+        hf.dict_to_table(empty_table, self.tab_cnc_cont)
         self.check_data()
 
     def delete_trim(self):
@@ -585,6 +589,9 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
         if reset:
             self.pw.setMaximumHeight(self.psize_h)
             self.resize(self.minimumSizeHint())
+            self.pw.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding,
+                                                 QtWidgets.QSizePolicy.MinimumExpanding))
+            self.pw.setMaximumHeight(1600000)
 
     def highlight_field(self, f):
         f.setStyleSheet('border: 2px solid red;')
