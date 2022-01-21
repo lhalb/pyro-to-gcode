@@ -157,8 +157,13 @@ def gcode_to_values(code_dict, lead_axis='a', g_start='g91', inc=5.0, offset=Tru
     if 'g' not in cd.keys() or not cd['g']:
         raise AttributeError('No G-sets defined!')
 
+    # Wenn die Führungsachse nicht enthalten ist
     if lead_axis not in cd.keys():
-        raise AttributeError('Leading Axis not properly defined')
+        raise AttributeError('Leading Axis not properly defined!')
+
+    # Wenn kein Strahlstrom definiert wurde
+    if 'sq' not in cd.keys():
+        raise AttributeError('No Power Column defined!')
 
     starts = {k: 0 for k in cd.keys()}
     data = {k: [] for k in cd.keys() if k != 'g'}
