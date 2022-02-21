@@ -25,6 +25,9 @@
   <property name="windowTitle">
    <string>G-Code Converter</string>
   </property>
+  <property name="tabShape">
+   <enum>QTabWidget::Rounded</enum>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
@@ -386,8 +389,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>476</width>
-               <height>119</height>
+               <width>459</width>
+               <height>70</height>
               </rect>
              </property>
              <attribute name="label">

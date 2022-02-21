@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['run.py'],
-             pathex=['D:\\03_Scripte\\Projects\\pyro-to-gcode\\run.py'],
+             pathex=['D:\\pyro-to-gcode\\run.py'],
              binaries=[],
              datas=[],
              hiddenimports=['scipy.special.cython_special'],
@@ -21,7 +21,7 @@ exe = EXE(pyz,
           a.scripts,
           a.binaries,
           a.zipfiles,
-          a.datas + [('appicon.ico', 'D:\\03_Scripte\\Projects\\pyro-to-gcode\\gui\\icons\\appicon.ico', 'DATA')],
+          a.datas + [('appicon.ico', 'D:\\pyro-to-gcode\\gui\\icons\\appicon.ico', 'DATA')],
           [],
           name='Pyro-Converter',
           debug=False,

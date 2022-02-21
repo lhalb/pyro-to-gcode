@@ -16,10 +16,7 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
         super(self.__class__, self).__init__()
         self.setupUi(self)
 
-        # # Setze icon
-        root = QtCore.QFileInfo(__file__).absolutePath()
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(root + "/icons/icon.png"), QtGui.QIcon.Selected, QtGui.QIcon.On)
+        icon = QtGui.QIcon(":/img/appicon.png")
         self.setWindowIcon(icon)
 
         # aenderungen an der GUI

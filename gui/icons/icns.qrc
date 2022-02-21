@@ -4,6 +4,7 @@
     <file>error.png</file>
   </qresource>
   <qresource prefix="img">
+    <file>appicon.png</file>
     <file>export_xls.png</file>
     <file>accept.png</file>
     <file>add_col.png</file>
