@@ -154,7 +154,7 @@ def export_data_to_gcode(data: pd.DataFrame, la: str, ignore=['soy']):
 
     body = '\n'.join(body_strings)
 
-    footer = '\nM30'
+    footer = '\nM30\n\n'
 
     return '\n'.join([header, body, footer])
 
