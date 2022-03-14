@@ -53,7 +53,6 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.but_trim_apply.clicked.connect(self.trim_data)
         self.but_trim_undo.clicked.connect(self.delete_trim)
         self.but_import_par.clicked.connect(self.import_pyr_par)
-        self.but_trim_undo.clicked.connect(self.delete_trim)
         self.para_filt_sav_n.valueChanged.connect(lambda: self.update_filter(False))
         self.para_filt_med_n.valueChanged.connect(lambda: self.update_filter(False))
         self.para_filt_sav_delta.valueChanged.connect(lambda: self.update_filter(False))
@@ -71,6 +70,7 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.but_gCode.clicked.connect(self.export_gcode)
         self.but_delete_data.clicked.connect(self.clear_data)
         self.actionOpen.triggered.connect(self.import_data)
+        self.but_clear_cnc.clicked.connect(self.delete_cnc)
 
         # Tabelle
         self.but_tab_row_add.clicked.connect(self.add_row)
@@ -269,7 +269,7 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.filtered = None
         self.check_data()
 
-    def plot_data(self, ib=None, cnc=None, filt=None):
+    def plot_data(self, ib=None, cnc=None):
         self.data_ax1.clear()
         self.data_ax2.clear()
 
@@ -326,6 +326,7 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
     def delete_cnc(self):
         self.cnc_data = None
         self.but_clear_cnc.setEnabled(False)
+        self.check_data()
 
     def plot_filter(self, x, y):
         self.fline.set_xdata(x)
@@ -645,7 +646,10 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
             self.but_clear_cnc.setEnabled(False)
 
         if self.df is not None:
-            self.plot_data(cnc=self.cnc_data)
+            if self.cnc_data is not None:
+                self.plot_data(cnc=self.cnc_data)
+            else:
+                self.plot_data()
             if self.filtered is not None:
                 self.plot_filter(self.filtered['Zeit'], self.filtered['P-Ausgabe'])
         else:
