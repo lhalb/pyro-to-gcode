@@ -1,19 +1,16 @@
 from PyQt5 import QtWidgets
 from gui import cncimportUI as cUI
-from gui.errordialog import ErrorDialogue as ED
 from lib import cncimport as cnc
 from lib import libhelperfunctions as hf
 from gui import boxes as box
 
 
 class CncImportDialogue(cUI.Ui_Dialog, QtWidgets.QDialog):
-    def __init__(self, path: str, leading_axis: str, angle: float, part: str):
+    def __init__(self, path: str):
         super(CncImportDialogue, self).__init__()
 
         self.fname = path
-        self.inc = angle
-        self.la = leading_axis
-        self.np = part
+        self.np = None
 
         self.raw = None
         self.cleared_cnc = None
@@ -32,6 +29,7 @@ class CncImportDialogue(cUI.Ui_Dialog, QtWidgets.QDialog):
     def setup_buttons(self):
         self.but_accept.clicked.connect(self.ok_clicked)
         self.but_back_close.clicked.connect(self.close_clicked)
+        self.cb_cnc_np.stateChanged.connect(self.button_toggled)
 
     def ok_clicked(self):
         # Wenn noch gar nichts erstellt wurde
@@ -105,6 +103,7 @@ class CncImportDialogue(cUI.Ui_Dialog, QtWidgets.QDialog):
         self.but_back_close.setText('Undo')
 
         code = self.cleared_cnc
+        part = 'NP-1' if self.cb_cnc_np.isChecked() else 'NP-2'
 
         self.strt, end = cnc.find_desired_section(code)
         ebh_cnc = code[self.strt:end]
@@ -114,7 +113,7 @@ class CncImportDialogue(cUI.Ui_Dialog, QtWidgets.QDialog):
         contour_cnc = code[self.strt + self.c_strt:self.strt + c_end]
         contour_mode = cnc.get_parameter_mode(contour_cnc)
 
-        contour_parameters = cnc.get_parameters(contour_cnc, mode=contour_mode, n_p=self.np)
+        contour_parameters = cnc.get_parameters(contour_cnc, mode=contour_mode, n_p=part)
 
         hf.dict_to_table(d=contour_parameters, table=self.tab_para)
 
@@ -127,7 +126,7 @@ class CncImportDialogue(cUI.Ui_Dialog, QtWidgets.QDialog):
         contour_parameters = self.raw_parameters
         strt = self.strt
         c_strt = self.c_strt
-        n_p = self.np
+        n_p = 'NP-1' if self.cb_cnc_np.isChecked() else 'NP-2'
 
         par_cnc = code[strt:strt + c_strt]
         par_mode = cnc.get_parameter_mode(par_cnc)
@@ -140,4 +139,14 @@ class CncImportDialogue(cUI.Ui_Dialog, QtWidgets.QDialog):
         corrected_values = cnc.replace_missing_values(contour_parameters, values)
 
         hf.dict_to_table(corrected_values, self.tab_para)
+
+    def button_toggled(self):
+        state = self.cb_cnc_np.isChecked()
+        if self.cleared_cnc or self.raw_parameters:
+            confirm = box.show_msg_box('The part has changed. Confirm?')
+            if confirm:
+                self.display_parameters()
+            else:
+                new_state = not state
+                self.cb_cnc_np.setCheckState(new_state)
 

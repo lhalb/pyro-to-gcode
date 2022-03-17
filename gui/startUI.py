@@ -71,6 +71,7 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.but_delete_data.clicked.connect(self.clear_data)
         self.actionOpen.triggered.connect(self.import_data)
         self.but_clear_cnc.clicked.connect(self.delete_cnc)
+        self.but_filt_undo.clicked.connect(self.delete_filter)
 
         # Tabelle
         self.but_tab_row_add.clicked.connect(self.add_row)
@@ -126,9 +127,9 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
         if not path:
             return
         ang = float(self.sb_cnc_ang.text().replace(',', '.'))
-        part = 'NP-2' if self.cb_cnc_np.isChecked() else 'NP-1'
+        # part = 'NP-2' if self.cb_cnc_np.isChecked() else 'NP-1'
         axis = self.cb_leading_axis.currentText()
-        cd = Cd(path=path, leading_axis=axis, angle=ang, part=part)
+        cd = Cd(path=path)
         cd.exec_()
         if not cd.cleared_parameters:
             box.show_info_box('Import failed.')
@@ -323,6 +324,11 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.filtered = None
         self.check_data()
 
+    def delete_filter(self):
+        self.filtered = None
+        self.init_vals()
+        self.check_data()
+
     def delete_cnc(self):
         self.cnc_data = None
         self.but_clear_cnc.setEnabled(False)
@@ -417,9 +423,6 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
 
             self.filtered = filt_df
             self.check_data()
-
-    def delete_filtered(self):
-        self.filtered = None
 
     def init_vals(self):
         curr_tb = self.tb_filt.currentIndex()
