@@ -451,7 +451,8 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
         else:
             if self.df is not None:
                 data = self.df['P-Ausgabe']
-            return
+            else:
+                return
 
         # maximale Glättung erfasst 1/10 der Messwerte
         max_win = hf.round_to_odd(len(data.index)/10)
