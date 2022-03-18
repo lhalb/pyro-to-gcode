@@ -30,17 +30,21 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
 
         # Init Data-Plot
         self.pw = self.plotwidget.canvas
+        self.tb = self.plotwidget.toolbar
         self.data_ax1 = self.pw.fig.add_subplot(111)
         self.data_ax2 = self.data_ax1.twinx()
         self.data_ax1.clear()
         self.data_ax2.clear()
         self.fline, = self.data_ax2.plot([], [])
 
-        self.psize_w = self.plotwidget.frameGeometry().width()
         self.psize_h = self.plotwidget.frameGeometry().height()
+
+        self.hide_plotwidget()
 
         self.move_up = QtWidgets.QAction("Move_Up", self)
         self.move_down = QtWidgets.QAction("Move_Down", self)
+
+        self.start_size = QtCore.QSize(self.width(), self.height())
 
         self.setup_trigger()
         self.check_data()
@@ -171,6 +175,7 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
             data = ld.import_data(path)
             data['Zeit'] = ld.reset_timescale(data['Zeit'])
             self.path = hf.basename(path)
+            self.show_plotwidget()
             self.set_current_data(data)
         except ValueError as E:
             args = E.args
@@ -288,20 +293,27 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
         ax.plot(x, y11, 'r-', label=y11.name)
         ax.plot(x, y12, 'k--', label=y12.name)
 
+        ax.set_xlabel('Zeit [s]')
+        ax.set_ylabel('Temperatur [°C]')
+
         lines, labels = ax.get_legend_handles_labels()
 
         y21 = d['P-Ausgabe']
 
         if not ib:
             ax2.plot(x, y21, 'c-', label=y21.name)
+            y2_string = 'P-Wert [%]'
         else:
             ax2.plot(x, ib, 'c-', label=ib.name, alpha=0.5)
+            y2_string = 'Strahlstrom [mA]'
 
         if cnc is not None:
             ax2.plot(cnc['Zeit'], cnc['P-Ausgabe'], 'm-', label='SQ-CNC')
+            if 'Strahlstrom' not in y2_string:
+                y2_string += ' | Strahlstrom [mA]'
 
         self.fline, = self.data_ax2.plot([], [], 'g-', label='Gefiltert')
-
+        ax2.set_ylabel(y2_string)
         lines2, labels2 = ax2.get_legend_handles_labels()
 
         ax2.legend(lines + lines2, labels + labels2, loc=0)
@@ -317,6 +329,7 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.filtered = None
         empty_table = {'a': ''}
         hf.dict_to_table(empty_table, self.tab_cnc_cont)
+        self.hide_plotwidget()
         self.check_data()
 
     def delete_trim(self):
@@ -588,11 +601,21 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
 
         tab.setMaximumHeight(h)
         if reset:
-            self.pw.setMaximumHeight(self.psize_h)
-            self.resize(self.minimumSizeHint())
-            self.pw.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding,
-                                                 QtWidgets.QSizePolicy.MinimumExpanding))
-            self.pw.setMaximumHeight(1600000)
+            self.show_plotwidget()
+
+    def hide_plotwidget(self):
+        self.plotwidget.setMaximumHeight(0)
+        self.plotwidget.hide()
+        self.resize(self.minimumSizeHint())
+
+    def show_plotwidget(self):
+        self.plotwidget.show()
+        # self.resize(self.minimumSizeHint())
+        self.plotwidget.setMaximumHeight(self.psize_h)
+        self.resize(self.minimumSizeHint())
+        self.plotwidget.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding,
+                                                    QtWidgets.QSizePolicy.Expanding))
+        self.plotwidget.setMaximumHeight(1600000)
 
     def highlight_field(self, f):
         f.setStyleSheet('border: 2px solid red;')
