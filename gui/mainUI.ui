@@ -53,7 +53,7 @@
          </size>
         </property>
         <property name="toolTip">
-         <string>Load CSV file</string>
+         <string>Load CSV file | Strg + O</string>
         </property>
         <property name="text">
          <string/>
@@ -95,7 +95,7 @@
          </size>
         </property>
         <property name="toolTip">
-         <string>Clear all data</string>
+         <string>Clear all data | Strg + Alt + Shift + Backspace</string>
         </property>
         <property name="text">
          <string/>
@@ -109,6 +109,9 @@
           <width>25</width>
           <height>25</height>
          </size>
+        </property>
+        <property name="shortcut">
+         <string>Ctrl+Alt+Shift+Backspace</string>
         </property>
        </widget>
       </item>
@@ -159,7 +162,7 @@
          <enum>QTabWidget::North</enum>
         </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>0</number>
         </property>
         <property name="iconSize">
          <size>
@@ -219,7 +222,7 @@
                </size>
               </property>
               <property name="toolTip">
-               <string>Threshold to which the data will bei trimmed.</string>
+               <string>Threshold to which the data will be trimmed.</string>
               </property>
               <property name="inputMask">
                <string>d000</string>
@@ -310,7 +313,7 @@
                </sizepolicy>
               </property>
               <property name="toolTip">
-               <string>Apply Trimming</string>
+               <string>Apply Trimming | Strg + Enter</string>
               </property>
               <property name="text">
                <string/>
@@ -325,6 +328,9 @@
                 <height>20</height>
                </size>
               </property>
+              <property name="shortcut">
+               <string>Ctrl+Return</string>
+              </property>
              </widget>
             </item>
             <item>
@@ -333,7 +339,7 @@
                <bool>false</bool>
               </property>
               <property name="toolTip">
-               <string>Revert</string>
+               <string>Revert | Strg + Z</string>
               </property>
               <property name="text">
                <string/>
@@ -341,6 +347,9 @@
               <property name="icon">
                <iconset resource="icons/icns.qrc">
                 <normaloff>:/img/revert.png</normaloff>:/img/revert.png</iconset>
+              </property>
+              <property name="shortcut">
+               <string>Ctrl+Z</string>
               </property>
              </widget>
             </item>
@@ -683,6 +692,9 @@
                 <height>20</height>
                </size>
               </property>
+              <property name="shortcut">
+               <string>Ctrl+Z</string>
+              </property>
              </widget>
             </item>
             <item>
@@ -704,7 +716,7 @@
             <item>
              <widget class="QPushButton" name="but_filt_apply">
               <property name="toolTip">
-               <string>Accept</string>
+               <string>Accept | Strg + Enter</string>
               </property>
               <property name="text">
                <string/>
@@ -718,6 +730,9 @@
                 <width>20</width>
                 <height>20</height>
                </size>
+              </property>
+              <property name="shortcut">
+               <string>Ctrl+Return</string>
               </property>
              </widget>
             </item>
@@ -747,6 +762,9 @@
             </property>
             <item>
              <widget class="QPushButton" name="but_import_gcode">
+              <property name="toolTip">
+               <string>Import Gcode to process the part with process control</string>
+              </property>
               <property name="text">
                <string/>
               </property>
@@ -764,6 +782,9 @@
             </item>
             <item>
              <widget class="QPushButton" name="but_import_par">
+              <property name="toolTip">
+               <string>Import PYR_PAR-File for power control to get beam current range</string>
+              </property>
               <property name="text">
                <string/>
               </property>
@@ -872,7 +893,7 @@
               <item row="0" column="1">
                <widget class="QDoubleSpinBox" name="sb_cnc_ang">
                 <property name="toolTip">
-                 <string>Increment in °, to which the cnc data will bei created</string>
+                 <string>Increment in °, to which the cnc data will be created</string>
                 </property>
                 <property name="suffix">
                  <string/>
@@ -926,7 +947,7 @@
                  </size>
                 </property>
                 <property name="toolTip">
-                 <string>Maximum beam offset. Can be read from PAR-files</string>
+                 <string>Range of beam current. Can be read from PAR-files</string>
                 </property>
                </widget>
               </item>
@@ -1174,7 +1195,7 @@
                <bool>false</bool>
               </property>
               <property name="toolTip">
-               <string>Clear Data</string>
+               <string>Clear Data | Strg + Z</string>
               </property>
               <property name="text">
                <string/>
@@ -1188,6 +1209,9 @@
                 <width>20</width>
                 <height>20</height>
                </size>
+              </property>
+              <property name="shortcut">
+               <string>Ctrl+Z</string>
               </property>
              </widget>
             </item>
@@ -1210,7 +1234,7 @@
                <bool>false</bool>
               </property>
               <property name="toolTip">
-               <string>Create CNC-Data</string>
+               <string>Create CNC-Data | Strg + Enter</string>
               </property>
               <property name="text">
                <string/>
@@ -1224,6 +1248,9 @@
                 <width>20</width>
                 <height>20</height>
                </size>
+              </property>
+              <property name="shortcut">
+               <string>Ctrl+Return</string>
               </property>
              </widget>
             </item>
@@ -1248,7 +1275,7 @@
              </sizepolicy>
             </property>
             <property name="toolTip">
-             <string>Save current data as XLSX file</string>
+             <string>Save current data as XLSX file | Strg + E</string>
             </property>
             <property name="text">
              <string>Save as XLSX</string>
@@ -1263,6 +1290,9 @@
               <height>40</height>
              </size>
             </property>
+            <property name="shortcut">
+             <string>Ctrl+E</string>
+            </property>
            </widget>
           </item>
           <item>
@@ -1274,7 +1304,7 @@
              </sizepolicy>
             </property>
             <property name="toolTip">
-             <string>Conbines power data with cnc parameters and exports Gcode</string>
+             <string>Combines power data with cnc parameters and exports Gcode | Strg + G</string>
             </property>
             <property name="text">
              <string>Convert to Gcode</string>
@@ -1290,7 +1320,7 @@
              </size>
             </property>
             <property name="shortcut">
-             <string>Ctrl+Return</string>
+             <string>Ctrl+G</string>
             </property>
            </widget>
           </item>
