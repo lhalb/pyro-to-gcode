@@ -38,7 +38,7 @@
        <item alignment="Qt::AlignVCenter">
         <widget class="QLabel" name="label">
          <property name="text">
-          <string>Part to proces: </string>
+          <string>Part to process: </string>
          </property>
         </widget>
        </item>
@@ -51,7 +51,7 @@
           </sizepolicy>
          </property>
          <property name="toolTip">
-          <string>Select the data suitable for teh part to be created</string>
+          <string>Part to be processed</string>
          </property>
          <property name="text">
           <string>CheckBox</string>

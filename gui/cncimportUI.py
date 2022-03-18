@@ -77,8 +77,8 @@ class Ui_Dialog(object):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
         self.info_txt.setText(_translate("Dialog", "Hier steht dann ein Lauftext."))
-        self.label.setText(_translate("Dialog", "Part to proces: "))
-        self.cb_cnc_np.setToolTip(_translate("Dialog", "Select the data suitable for teh part to be created"))
+        self.label.setText(_translate("Dialog", "Part to process: "))
+        self.cb_cnc_np.setToolTip(_translate("Dialog", "Part to be processed"))
         self.cb_cnc_np.setText(_translate("Dialog", "CheckBox"))
         self.txt_cnc.setPlainText(_translate("Dialog", "Texteditor\n"
 ""))
