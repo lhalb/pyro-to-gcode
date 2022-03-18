@@ -103,7 +103,7 @@ class CncImportDialogue(cUI.Ui_Dialog, QtWidgets.QDialog):
         self.but_back_close.setText('Undo')
 
         code = self.cleared_cnc
-        part = 'NP-1' if self.cb_cnc_np.isChecked() else 'NP-2'
+        part = 'NP-1' if not self.cb_cnc_np.isChecked() else 'NP-2'
 
         self.strt, end = cnc.find_desired_section(code)
         ebh_cnc = code[self.strt:end]
@@ -126,7 +126,7 @@ class CncImportDialogue(cUI.Ui_Dialog, QtWidgets.QDialog):
         contour_parameters = self.raw_parameters
         strt = self.strt
         c_strt = self.c_strt
-        n_p = 'NP-1' if self.cb_cnc_np.isChecked() else 'NP-2'
+        n_p = 'NP-1' if not self.cb_cnc_np.isChecked() else 'NP-2'
 
         par_cnc = code[strt:strt + c_strt]
         par_mode = cnc.get_parameter_mode(par_cnc)

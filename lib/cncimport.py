@@ -186,6 +186,8 @@ def gcode_to_values(code_dict, lead_axis='a', g_start='g91', inc=5.0, offset=Tru
             if offset:
                 #  setze den Offsetwert als Startwert
                 lead_start = hf.maybeMakeNumber(cd[lead_axis][i])
+                if type(lead_start) not in [int, float]:
+                    raise AttributeError(f'Misconfigured Axis {lead_axis}')
 
         lead_dist = get_distance(lead_start, g_act, cd[lead_axis][i])
         steps.append(abs(int(lead_dist/inc)))

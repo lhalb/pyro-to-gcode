@@ -171,6 +171,7 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
         path = self.open_file(files='csv(*.csv)')
         if not path:
             return
+
         try:
             data = ld.import_data(path)
             data['Zeit'] = ld.reset_timescale(data['Zeit'])
@@ -229,6 +230,10 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
                 else:
                     new_inc = ed.ang
                     increment = new_inc
+            except AttributeError as E:
+                box.show_error_box(E.args[0])
+                return
+
 
         cdf = hf.dict_to_dataframe(gcode)
         if self.filtered is not None:
