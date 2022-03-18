@@ -33,8 +33,8 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
         self.tb = self.plotwidget.toolbar
         self.data_ax1 = self.pw.fig.add_subplot(111)
         self.data_ax2 = self.data_ax1.twinx()
-        self.data_ax1.clear()
-        self.data_ax2.clear()
+        # self.data_ax1.clear()
+        # self.data_ax2.clear()
         self.fline, = self.data_ax2.plot([], [])
 
         self.psize_h = self.plotwidget.frameGeometry().height()
@@ -171,6 +171,8 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
         path = self.open_file(files='csv(*.csv)')
         if not path:
             return
+        if self.df is not None:
+            self.clear_data()
 
         try:
             data = ld.import_data(path)
@@ -447,7 +449,9 @@ class MyApp(mUI.Ui_MainWindow, QtWidgets.QMainWindow):
         if self.trimmed is not None:
             data = self.trimmed['P-Ausgabe']
         else:
-            data = self.df['P-Ausgabe']
+            if self.df is not None:
+                data = self.df['P-Ausgabe']
+            return
 
         # maximale Glättung erfasst 1/10 der Messwerte
         max_win = hf.round_to_odd(len(data.index)/10)
